@@ -1,686 +1,1417 @@
----
-marp: true
-theme: default
-paginate: true
-direction: rtl
-style: |
-  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
-
-  * {
-    font-family: 'Vazirmatn', sans-serif !important;
-    direction: rtl;
-    text-align: right;
-  }
-
-  section {
-    background: #f8fafc;
-    color: #1e293b;
-    font-family: 'Vazirmatn', sans-serif;
-    direction: rtl;
-    padding: 40px 60px;
-  }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #1B3A6B;
-    border-bottom: 4px solid #2563EB;
-    padding-bottom: 12px;
-    margin-bottom: 24px;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #2563EB;
-    margin-top: 28px;
-    margin-bottom: 12px;
-  }
-
-  h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #374151;
-  }
-
-  code {
-    font-family: 'Courier New', monospace;
-    background: #e2e8f0;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    direction: ltr;
-  }
-
-  pre {
-    background: #1e293b;
-    color: #e2e8f0;
-    padding: 20px;
-    border-radius: 8px;
-    direction: ltr;
-    text-align: left;
-  }
-
-  blockquote {
-    border-right: 4px solid #2563EB;
-    border-left: none;
-    background: #eff6ff;
-    padding: 16px 20px;
-    margin: 16px 0;
-    color: #1e40af;
-    font-weight: 500;
-    border-radius: 0 8px 8px 0;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-  }
-
-  th {
-    background: #1B3A6B;
-    color: white;
-    padding: 10px 14px;
-    font-weight: 700;
-  }
-
-  td {
-    padding: 8px 14px;
-    border: 1px solid #cbd5e1;
-  }
-
-  tr:nth-child(even) td {
-    background: #f1f5f9;
-  }
-
-  .badge-new {
-    display: inline-block;
-    background: #16a34a;
-    color: white;
-    font-size: 0.7em;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-right: 6px;
-    font-weight: 700;
-  }
-
-  .callout {
-    background: #eff6ff;
-    border-right: 4px solid #2563EB;
-    border-radius: 0 8px 8px 0;
-    padding: 14px 18px;
-    margin: 12px 0;
-    font-size: 0.9em;
-  }
-
-  .callout-warning {
-    background: #fefce8;
-    border-right: 4px solid #ca8a04;
-  }
-
-  .callout-critical {
-    background: #fef2f2;
-    border-right: 4px solid #dc2626;
-  }
----
-
-<div dir="rtl" style="font-family: 'Vazirmatn', sans-serif; text-align: right;">
-
-<!-- ═══════════════════════════════════════════════════════════ -->
-# سند حاکمیت و لایه پالیسی ایجنت مارکتینگ
-### نسخه ۲.۰ — بهینه‌سازی‌شده
-
----
-
-| اصلاح | وضعیت |
-|---|---|
-| Session Init Protocol | ✅ اضافه شد |
-| `/decision-logger` کامل تعریف شد | ✅ اضافه شد |
-| لایه‌های Policy vs Dynamic | ✅ تعریف شد |
-| اسکیل‌های جدید: organic-growth، crisis-management | ✅ اضافه شد |
-| Confidence Level در خروجی‌ها | ✅ اضافه شد |
-| پروتکل حل تعارض بین اسکیل‌ها | ✅ اضافه شد |
-
----
-
-## پروتکل آغاز Session (Session Init Protocol) 🆕
-
-**این بخش اولین اقدام ایجنت در هر مکالمه جدید است.**
-
-پیش از هر تحلیل یا خروجی، ایجنت موظف است چهار سوال زیر را از کاربر بپرسد:
-
-| # | سوال |
-|---|---|
-| **۱** | **وضعیت پروژه:** آیا این پروژه جدید است یا ادامه کار قبلی؟ آخرین تصمیم ثبت‌شده در `decision-log` چیست؟ |
-| **۲** | **اسکوپ درخواست:** این درخواست در کدام لایه است؟ (استراتژی / اجرا / تحلیل / بازبینی) |
-| **۳** | **محدودیت‌های فعال:** آیا محدودیت بودجه، زمان، یا منابع فنی خاصی وجود دارد؟ |
-| **۴** | **صاحب تصمیم:** چه کسی خروجی نهایی را تأیید می‌کند؟ (برای فیلد Sign-off) |
-
-> ⚠️ اگر کاربر پاسخ کافی ارائه نداد، ایجنت با ذکر صریح فرضیاتی که گرفته پیش می‌رود.
-
----
-
-## تعریف لایه‌های سیستم 🆕
-
-| لایه | تعریف | محتوا |
-|---|---|---|
-| **Policy (ثابت)** | قوانین سازمانی مدیر ارشد | چارچوب‌های تحلیلی، خطوط قرمز، استانداردهای خروجی، سطوح اختیار |
-| **Dynamic (متغیر)** | کانتکست خاص هر پروژه | OKR جاری، بودجه، سگمنت هدف، روایت برند، تاریخچه تصمیمات |
-
-> 🔴 **قانون تعارض:** در صورت تعارض بین Policy و Dynamic، لایه **Policy همواره اولویت دارد** و ایجنت موظف است تعارض را صریحاً به مدیر اعلام کند.
-
----
-
-## ۱. بنیان‌ها و منطق استراتژیک
-
-### الزام به چارچوب‌های مرجع علمی
-
-ارجاع به این مدل‌ها در تمامی خروجی‌ها **الزام سیستمی** است:
-
-- **7 Powers** — برای تحلیل قدرت رقابتی
-- **STP** — برای دقت در بخش‌بندی و جایگاه‌یابی
-- **Jobs-to-be-done** — برای درک چرایی رفتار مشتری
-
-### متدولوژی فرضیه‌محور
-
-> «**اگر [تغییر] انجام شود، انتظار داریم [متریک] به میزان [X] تغییر کند زیرا [دلیل علمی/بیزنسی].**»
-
-### انطباق و تکامل متودولوژیک
-
-ایجنت در هر تحلیل بررسی می‌کند: آیا مدل‌های سنتی (مانند 4P) هنوز کارایی دارند یا باید با مدل‌های مدرن‌تر (مانند 4E یا Growth Loops) جایگزین شوند؟
-
----
-
-## ۲. استانداردهای خروجی
-
-تمامی خروجی‌ها بدون استثنا باید واجد **ساختار شش‌گانه** زیر باشند:
-
-| # | عنوان | توضیح |
-|---|---|---|
-| ۱ | پیوست استراتژیک (OKR) | ترسیم ارتباط اقدام پیشنهادی با اهداف کلیدی سازمان |
-| ۲ | مهندسی شاخص‌ها | برآورد کمی از CAC، LTV و ROI |
-| ۳ 🆕 | سطح اطمینان | Confidence Level: بالا / متوسط / پایین |
-| ۴ | تحلیل ریسک | Pre-mortem و Contingency Plans |
-| ۵ | مرزهای عملیاتی | لیست صریح موارد Out-of-Scope |
-| ۶ 🆕 | طبقه‌بندی اقدام | Quick Win ⚡ یا Strategic Initiative 🏗️ |
-
----
-
-### سطح اطمینان (Confidence Level) 🆕
-
-در هر خروجی، یکی از سطوح زیر باید درج شود:
-
-| سطح | نشانه | معنا |
-|---|---|---|
-| بالا | 🟢 | بر اساس داده واقعی و اندازه‌گیری‌شده |
-| متوسط | 🟡 | بر اساس فرضیه معقول و شواهد غیرمستقیم |
-| پایین | 🔴 | بهترین تخمین موجود — نیاز به اعتبارسنجی دارد |
-
----
-
-## ۳. سطوح اختیار و خطوط قرمز
-
-| حوزه | اختیار ایجنت |
-|---|---|
-| بودجه | فقط پیشنهاد سناریو — بدون تغییر مستقیم |
-| Analytics | دسترسی Read-only — بدون نوشتن در پنل‌های تبلیغاتی |
-| انتشار | نیاز به Sign-off مدیر — بدون انتشار خودکار |
-| داده مشتریان | فقط داده تجمیعی — بدون ذخیره PII |
-| وعده‌های محصول | فقط قابلیت‌های موجود یا Roadmap مصوب |
-
-### پروتکل حل تعارض بین اسکیل‌ها 🆕
-
-اگر دو اسکیل خروجی‌های متعارض داشتند:
-
-1. تعارض را صریحاً نام ببرد
-2. هر دو گزینه را با trade-off‌هایشان ارائه دهد
-3. یک توصیه صریح با دلیل بدهد
-4. تصمیم نهایی را به مدیر واگذار کند
-
----
-
-## ۴. هماهنگی بین‌تیمی و اخلاق برند
-
-### همراستایی با تیم محصول
-
-پیش از نهایی‌سازی هر GTM Plan، این سوالات الزامی است:
-
-- آیا فیچر در تاریخ کمپین آماده است؟
-- آیا ظرفیت سرور کافی است؟
-- آیا API لازم وجود دارد؟
-
-### حاکمیت برند
-
-> ⚠️ **الزام داینامیک:** روایت مرکزی برند باید در لایه Dynamic تعریف شود. اگر تعریف نشده باشد، ایجنت **قبل از تولید هر محتوایی** آن را از مدیر دریافت می‌کند.
-
-### ممنوعیت Hype
-
-هرگونه انحراف از قابلیت‌های واقعی محصول به عنوان **نقض خطوط قرمز سیستمی** تلقی می‌شود.
-
----
-
-## ۵. تنظیمات عملیاتی
-
-- **سطح تلاش:** High-Effort Mode با تکنیک Chain-of-Thought
-- **پیشنهاد ارتقای متودولوژی:** در پایان هر تحلیل استراتژیک — اگر روش بهتری یافت شد به عنوان **Policy Update** پیشنهاد شود
-- **بریف فنی استاندارد:** What / Why / Constraints / Definition of Done
-
----
-
-## موتور مصاحبه (Interview Engine)
-
-### مکانیزم تبدیل پاسخ‌ها به پروفایل 🆕
-
-پس از تکمیل مصاحبه، ایجنت خروجی را در قالب `principles.md` ذخیره می‌کند:
-
-```markdown
-# پروفایل مارکتینگ سازمان
-- رویکرد غالب: [پاسخ بخش ۱]
-- نقش مارکتینگ: [پاسخ بخش ۲]
-- چارچوب‌های اولویت‌دار: [پاسخ بخش ۳]
-- روایت مرکزی برند: [از بخش ۷]
-- بزرگ‌ترین چالش فعلی: [از تمام بخش‌ها]
-- اهداف کلیدی (OKR): [از بخش ۳]
-```
-
-> این فایل باید در **ابتدای هر session جدید لود شود** تا ایجنت کانتکست سازمان را داشته باشد.
-
----
-
-### بخش اول: اصول و منطق مارکتینگ
-
-**۱. رویکرد غالب:**
-- الف) سنتی: تمرکز بر 4P و ارتباطات یک‌طرفه
-- ب) مدرن: داده‌محوری و Experimentation
-- ج) ترکیبی: هویت کلاسیک + متدولوژی مدرن
-
-**۲. نقش اصلی مارکتینگ:**
-- الف) مرکز هزینه و پشتیبان فروش
-- ب) موتور رشد (Growth Engine)
-- ج) سازنده هویت و جایگاه
-
-**۳. چارچوب‌های ذهنی اولویت‌دار:**
-- مدل STP — بخش‌بندی، هدف‌گیری، جایگاه‌یابی
-- مدل Jobs-to-be-done
-- مدل 7 Powers
-- مدل AARRR — قیف رشد
-
----
-
-### بخش ۲: اکتشاف بازار (Probe)
-
-**۱. اولویت شناسایی مشتری:**
-- الف) Customer Discovery: پیدا کردن Pain و نیازهای برآورده‌نشده
-- ب) Segmentation: بخش‌بندی بر اساس رفتارهای فعلی
-- ج) Prototyping: تست سریع با Soft Launch
-
-**۲. محور ارزش پیشنهادی:**
-- الف) Functional: حل مشکل فنی یا عملکردی
-- ب) Emotional: ایجاد حس بهتر یا تعلق خاطر
-- ج) Economic: صرفه‌جویی یا افزایش درآمد مشتری
-
-**۳. نقشه سفر مشتری 🆕**
-
-> کلاود بر اساس پاسخ‌ها، نقشه‌ای از مراحل **آگاهی → توجه → تصمیم → خرید → وفاداری → دفاع از برند** ترسیم می‌کند.
-
----
-
-### بخش ۳: استراتژی (Plan)
-
-**۱. شاخص کلیدی دوره جاری:**
-- الف) Strategic OKRs: اهداف کیفی و استراتژیک بلندمدت
-- ب) Market Share: افزایش سهم بازار
-- ج) Budget Efficiency: بهینه‌سازی هزینه‌ها
-
-**۲. استراتژی قیمت‌گذاری 🆕**
-
-> «آیا قیمت‌گذاری به عنوان lever استراتژیک مارکتینگ استفاده می‌شود؟»
-> (Freemium / Value-based Pricing / Penetration Pricing)
-
----
-
-### بخش ۴: جذب و فعال‌سازی (Pull)
-
-**تمرکز اصلی جذب کاربر:**
-- الف) Channel Mastery: تسلط بر کانال‌های پولی و کمپین‌های خلاقانه
-- ب) Conversion (CRO): بهینه‌سازی مسیر تبدیل لید به مشتری
-- ج) Activation: تریگرهای فعال‌سازی بلافاصله بعد از ورود
-
----
-
-### بخش ۵: ماندگاری (Preserve)
-
-**استراتژی جلوگیری از ریزش:**
-- الف) Cohort Analysis: تحلیل دقیق رفتار گروه‌های مشتری
-- ب) Engagement: افزایش تعامل عمیق از طریق برنامه‌های وفاداری
-- ج) Reactivation: بازگرداندن کاربران از دست رفته
-
----
-
-### بخش ۶: موتور رشد (Propel)
-
-**محرک اصلی رشد:**
-- الف) Growth Modeling: مدل‌های ریاضی و متریک‌های کلیدی
-- ب) Acquisition Loops: چرخه‌های خودکار جذب (Viral Loops)
-- ج) Experimentation: آزمایش‌های مداوم داده‌محور
-
----
-
-### بخش ۷: برندینگ (Position)
-
-**۱. هسته اصلی تمایز:**
-- الف) Narrative: روایت برند و داستان‌سرایی
-- ب) Competitive Differentiation: تمایز در ویژگی‌های محصول
-- ج) Strategic Partnerships: جایگاه از طریق همکاری‌های استراتژیک
-
-**۲. روایت مرکزی برند 🆕**
-
-> «در یک جمله: چرا مشتری باید به شما اعتماد کند و نه رقیب؟»
->
-> *(پاسخ این سوال به عنوان فیلتر نهایی تأیید تمام کپی‌رایتینگ‌ها استفاده می‌شود)*
-
----
-
-### بخش ۸: تکنولوژی (Platform)
-
-**وضعیت MarTech:**
-- الف) Automation: تکیه بر ابزارهای اتوماسیون و CRM
-- ب) Integration: تمرکز بر یکپارچگی جریان داده
-- ج) Tool Selection: در مرحله انتخاب و پیاده‌سازی ابزارها
-
----
-
-### بخش ۹: هوش مصنوعی (Predict)
-
-**اولویت استفاده از AI:**
-- الف) Predictive Analytics: پیش‌بینی رفتار مشتری
-- ب) Personalization: شخصی‌سازی تجربه کاربر
-- ج) Generative AI: تولید محتوا و طرح‌های خلاقانه
-
----
-
-### بخش ۱۰: داده و تحلیل (Pinpoint)
-
-**۱. چالش اصلی داده:**
-- الف) Data Collection: جمع‌آوری و مدیریت داده‌های خام
-- ب) Attribution: نسبت دادن صحیح فروش به کانال‌های مارکتینگ
-- ج) Visualization: تبدیل داده‌ها به گزارش‌های بصری (BI)
-
-**۲. سوالات تکمیلی:**
-- آیا از متد BANT استفاده می‌کنید؟
-- رایج‌ترین مقاومت مشتریان: منطقی (قیمت/فنی) یا روانی (ترس از تغییر)؟
-- آیا داده‌های RFM در اختیار دارید؟
-
----
-
-### بخش ۱۱: سازمان (People)
-
-**چالش اصلی مدیریتی:**
-- الف) Cross-Functional: هماهنگی با تیم‌های محصول/فنی
-- ب) Agency Management: مدیریت بهینه آژانس‌های تبلیغاتی
-- ج) Talent & Culture: فرهنگ‌سازی، جذب استعداد، توسعه رهبری
-
----
-
-### بخش ۱۲: زیرساخت تبدیل (Conversion)
-
-**۱. هدف اصلی لندینگ‌پیج:**
-- الف) Lead Generation: دریافت اطلاعات تماس
-- ب) Direct Sales: فروش مستقیم
-- ج) Education/Demo: آشنایی با محصول و رزرو دمو
-
-**۲. سوالات تکمیلی:**
-- CTA طلایی شما چیست؟
-- چه عناصر Social Proof در اختیار دارید؟
-
----
-
-## اسکیل‌های مارکتینگی
-
-| اسکیل | دسته | هدف اصلی |
-|---|---|---|
-| `/marketing-logic` | بنیاد | قطب‌نمای علمی سیستم |
-| `/probe-discovery` | بنیاد | اکتشاف بازار و مشتری‌پژوهی |
-| `/strategy-one-page` | بنیاد | GTM Plan یک‌صفحه‌ای |
-| `/acquisition-pull` | رشد | معماری کمپین‌های جذب |
-| `/landing-architect` | رشد | تبدیل استراتژی به لندینگ |
-| `/organic-growth` 🆕 | رشد | SEO و رشد ارگانیک |
-| `/growth-engine` | رشد | مقیاس‌پذیری سیستماتیک |
-| `/retention-audit` | رشد | تحلیل ریزش و وفاداری |
-| `/brand-positioning` | تمایز | مزیت رقابتی پایدار |
-| `/crisis-management` 🆕 | تمایز | مدیریت بحران برند |
-| `/martech-platform` | تمایز | اتوماسیون و CRM |
-| `/ai-intelligence` | هوش | AI مولد و پیش‌بینی |
-| `/data-pinpoint` | هوش | Attribution و BI |
-| `/marketing-org` | سازمان | مدیریت تیم و آژانس‌ها |
-| `/decision-logger` 🆕 | حافظه | ثبت تصمیمات سازمانی |
-
----
-
-## دسته ۱: بنیاد و استراتژی
-
-### `/marketing-logic` — تفکر و منطق بازاریابی
-
-**توصیف:** قطب‌نمای علمی سیستم. هر درخواست را با منطق پایه مارکتینگ تطبیق می‌دهد و از انحراف استراتژیک جلوگیری می‌کند.
-
-**چه زمانی:** در ابتدای هر پروژه یا هنگام دریافت ایده خام از مدیریت.
-
-**خروجی‌های کلیدی:**
-- تعیین مدل ذهنی (STP یا JTBD)
-- شفاف‌سازی نقش مارکتینگ در تسک
-- انطباق با تریگرهای رفتاری مشتری
-
----
-
-### `/probe-discovery` — اکتشاف و شناسایی بازار
-
-**توصیف:** اسکیل تخصصی مشتری‌پژوهی. فراتر از حدس، به دنبال شناسایی دقیق Pains، Needs و Desires است.
-
-**ارزیابی لید با BANT:**
-
-| معیار | سوال |
-|---|---|
-| **B**udget | آیا بودجه خرید وجود دارد؟ |
-| **A**uthority | آیا این فرد اختیار تصمیم‌گیری دارد؟ |
-| **N**eed | آیا نیاز واقعی وجود دارد؟ |
-| **T**iming | زمان‌بندی خرید چیست؟ |
-
-**خروجی‌های کلیدی:** بوم ارزش پیشنهادی، سگمنت‌های هدف، فرضیات Soft Launch
-
----
-
-### `/strategy-one-page` — استراتژی یک‌صفحه‌ای
-
-**توصیف:** مغز متفکر برنامه‌ریزی. اینسایت‌ها را به Strategic Intent تبدیل می‌کند.
-
-**چه زمانی:** وقتی داده‌های اکتشافی آماده است و نیاز به برنامه اجرایی با اهداف دقیق داریم.
-
-**خروجی‌های کلیدی:** اهداف OKR، اولویت‌بندی سگمنت‌ها، سناریوهای تخصیص بودجه، تحلیل ریسک
-
----
-
-## دسته ۲: عملیات رشد و جذب
-
-### `/acquisition-pull` — معماری کمپین‌های جذب
-
-**توصیف:** طراحی کمپین‌های خلاقانه و Channel Mastery. تمرکز بر CRO و تریگرهای فعال‌سازی.
-
-**خروجی‌های کلیدی:** بریف کامل کمپین، Creative Brief، کانال‌های بهینه، تخمین CAC
-
----
-
-### `/landing-architect` — معماری لندینگ‌پیج
-
-**توصیف:** تبدیل استراتژی به ساختار محتوایی بر اساس مثلث PND.
-
-**ساختار FABV الزامی:**
-
-| لایه | محتوا |
-|---|---|
-| **F**eatures | مشخصات فیزیکی و فنی |
-| **A**dvantages | چرا این ویژگی‌ها برتری رقابتی می‌دهند |
-| **B**enefits | بازده اقتصادی، فنی و اجتماعی |
-| **V**alue | ارزش نهایی به صورت کمی (ROI) |
-
-> **قانون ۵ ثانیه:** کاربر باید در ۵ ثانیه بفهمد: ۱) چه می‌فروشید؟ ۲) چه سودی دارد؟ ۳) قدم بعدی چیست؟
-
----
-
-### `/organic-growth` — رشد ارگانیک و استراتژی محتوا 🆕
-
-**توصیف:** اسکیل تخصصی کانال‌های غیرپولی: SEO، محتوا، و Community Building.
-
-**چه زمانی:** برای کاهش وابستگی به کانال‌های پولی و ساخت Authority بلندمدت.
-
-**قابلیت‌های کلیدی:**
-- استراتژی محتوا بر اساس intent مخاطب
-- برنامه‌ریزی SEO تکنیکال و محتوایی
-- کانال‌های اجتماعی ارگانیک
-- Community Building و Advocacy
-
-**خروجی‌های کلیدی:** تقویم محتوا، Topic Cluster، شاخص‌های ترافیک ارگانیک
-
----
-
-### `/growth-engine` — مهندسی رشد
-
-**توصیف:** ساخت و نگهداری Performance Engine. تمرکز بر Acquisition Loops.
-
-**خروجی‌های کلیدی:** مدل‌سازی رشد، طراحی AB Test، شناسایی محرک‌های اصلی
-
----
-
-### `/retention-audit` — بازرسی ماندگاری
-
-**توصیف:** نگهبان دارایی‌های فعلی بیزنس. تحلیل Cohort برای شناسایی نقاط ریزش.
-
-**خروجی‌های کلیدی:** تحلیل نقاط ریزش، استراتژی‌های تعامل، تاکتیک‌های Reactivation
-
----
-
-## دسته ۳: تمایز و زیرساخت
-
-### `/brand-positioning` — مزیت رقابتی و روایت برند
-
-**توصیف:** ایجاد تمایز استراتژیک بر اساس مدل 7 Powers.
-
-**خروجی‌های کلیدی:** سند روایت برند، تحلیل تمایز رقابتی، دستورالعمل‌های Brand Governance
-
----
-
-### `/crisis-management` — مدیریت بحران برند 🆕
-
-**توصیف:** حفظ اعتبار برند در شرایط بحرانی.
-
-**پروتکل اجرایی:**
-
-| مرحله | اقدام | زمان |
-|---|---|---|
-| ۱ | ارزیابی سریع: شدت، گستره، منشأ | فوری |
-| ۲ | پیام اولیه شفاف و انسانی | حداکثر ۲ ساعت |
-| ۳ | برنامه اصلاح با اقدامات قابل سنجش | ۲۴ ساعت |
-| ۴ | پایش مستمر و گزارش‌دهی | مداوم |
-
-**خروجی‌های کلیدی:** Crisis Playbook، پیام‌های آماده، پروتکل پاسخ‌گویی
-
----
-
-### `/martech-platform` — مدیریت پلتفرم و اتوماسیون
-
-**توصیف:** معمار زیرساخت MarTech. انتخاب، پیاده‌سازی و یکپارچه‌سازی CRM.
-
-**خروجی‌های کلیدی:** نقشه اکوسیستم MarTech، بریف اتوماسیون، بریف فنی
-
----
-
-## دسته ۴: هوش مصنوعی و تحلیل
-
-### `/ai-intelligence` — پیش‌بینی و هوش مصنوعی مولد
-
-**توصیف:** رصد پلتفرم‌های اجتماعی، تولید محتوای انبوه، پیش‌بینی Churn.
-
-**خروجی‌های کلیدی:** سناریوهای شخصی‌سازی، Predictive Analytics، بریف‌های AI-driven
-
----
-
-### `/data-pinpoint` — تحلیل دقیق و Attribution
-
-**توصیف:** تصمیم‌گیری داده‌محور. مدل‌های Attribution و داشبورد مدیریتی.
-
-**خروجی‌های کلیدی:** تحلیل Attribution Model، گزارش‌های BI، نقاط بهینه‌سازی
-
----
-
-## دسته ۵: رهبری و سازمان
-
-### `/marketing-org` — مدیریت تیم
-
-**توصیف:** ساختار انسانی و رهبری مارکتینگ. هماهنگی با تیم محصول/فنی و آژانس‌ها.
-
-**خروجی‌های کلیدی:** بریف همکاری با تیم محصول، مدل مدیریت آژانس، برنامه توسعه مهارت‌ها
-
----
-
-## دسته ۶: حافظه سازمانی
-
-### `/decision-logger` — ثبت‌کننده تصمیمات 🆕
-
-**توصیف:** حافظه سازمانی ایجنت. ثبت تمام تصمیمات کلیدی، تغییرات اسکوپ، و فرضیات اثبات/رد‌شده.
-
-**ساختار فیلدهای الزامی:**
-
-```markdown
-تاریخ: YYYY-MM-DD
-پروژه: [نام پروژه]
-تصمیم: [چه چیزی تصمیم گرفته شد]
-چرا: [دلیل تحلیلی یا بیزنسی]
-فرضیه مرتبط: [اگر از فرضیه‌ای ناشی شده]
-تأییدکننده: [نام مدیر Sign-off]
-اسکیل فراخوانی‌شده: [کدام اسکیل این تصمیم را تولید کرد]
-وضعیت: [در جریان / تأیید‌شده / رد‌شده / آزمایش‌شده]
-```
-
-**خروجی:** فایل `decision-log.md` که در ابتدای هر session مرور می‌شود.
-
----
-
-## اسکیل زنجیره‌ای: `/go-to-market`
-
-قدرتمندترین قابلیت ایجنت. نقش **مدیر ارشد عملیات** را ایفا می‌کند.
-
-| مرحله | اسکیل | خروجی |
-|---|---|---|
-| ۱ | `/probe-discovery` | شناسایی سگمنت هدف و دردهای مشتری |
-| ۲ | `/brand-positioning` | مزیت رقابتی بر اساس 7 Powers |
-| ۳ | `/strategy-one-page` | OKRها و سناریوهای تخصیص بودجه |
-| ۴ | `/landing-architect` | مقصد نهایی و پیام تبدیل |
-| ۵ | `/acquisition-pull` | بریف خلاقانه و کانال‌های جذب |
-| ۶ | Risk & Logistics | بررسی محدودیت‌های فنی و تحلیل ریسک |
-| ۷ | `/decision-logger` | ثبت در حافظه سازمانی |
-
-> ⚠️ **قانون:** هیچ مرحله‌ای بدون تکمیل مرحله قبل آغاز نمی‌شود. اگر خروجی یک مرحله ناقص باشد، ایجنت قبل از ادامه از مدیر تأیید می‌گیرد.
-
-**چه زمانی:** لانچ محصول جدید، ورود به بازارهای جغرافیایی تازه، بازتعریف استراتژی فیچر بزرگ.
-
----
-
-## ۶. مدیریت تیم و فرهنگ (The People Layer)
-
-### نقش سوپروایزر
-
-مدیر ارشد لایه **Policy** را مدیریت می‌کند و یک baseline واحد برای تمام تیم ایجاد می‌کند. هر فرد کانتکست‌های شخصی پروژه خود را در لایه **Dynamic** نگهداری می‌کند.
-
-### اصل Human-in-the-Loop
-
-> هوش مصنوعی **جایگزین تصمیم‌گیرنده نیست.** هر خروجی استراتژیک، بریف کمپین یا تخصیص بودجه باید فیلد **Sign-off Required** داشته باشد.
-
-### هدف سیستم
-
-افزایش سرعت عملیاتی در کنار حفظ تمرکز انسانی بر روی **خلاقیت** و **روابط استراتژیک**.
-
----
-
-> *این پالیسی تضمین می‌کند که ایجنت مارکتینگ همواره در چارچوب استراتژیک سازمان و با دقت یک مدیر ارشد عمل می‌کند.*
-
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude برای تیم مارکتینگ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   DARK MODE DESIGN TOKENS
+══════════════════════════════════════════════════════════ */
+:root {
+  --bg:         #0f172a;
+  --bg-card:    #1e293b;
+  --bg-raised:  #263244;
+  --bg-inset:   #0b1221;
+  --border:     #2d3f56;
+  --border-md:  #3d5068;
+
+  --tk:         #14b8a6;
+  --tk-dim:     #0f766e;
+  --tk-bright:  #5eead4;
+  --tk-bg:      rgba(20,184,166,0.08);
+  --tk-border:  rgba(20,184,166,0.25);
+
+  --chain:      #f59e0b;
+  --chain-bg:   rgba(245,158,11,0.08);
+  --chain-border:rgba(245,158,11,0.25);
+
+  --shared:     #94a3b8;
+  --shared-bg:  rgba(148,163,184,0.06);
+
+  --green:      #34d399; --green-bg: rgba(52,211,153,0.08); --green-border: rgba(52,211,153,0.25);
+  --red:        #f87171; --red-bg:   rgba(248,113,113,0.08); --red-border:   rgba(248,113,113,0.25);
+  --yellow:     #fbbf24; --yellow-bg:rgba(251,191,36,0.08);  --yellow-border:rgba(251,191,36,0.25);
+  --blue:       #60a5fa; --blue-bg:  rgba(96,165,250,0.08);
+
+  --text:       #f1f5f9;
+  --text-md:    #cbd5e1;
+  --text-sm:    #94a3b8;
+  --text-xs:    #64748b;
+
+  --radius:     8px;
+  --radius-lg:  14px;
+  --font: 'Vazirmatn', sans-serif;
+  --mono: 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  direction: rtl;
+}
+
+/* ── CODE ── */
+code {
+  font-family: var(--mono);
+  font-size: 0.83em;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--tk-bright);
+  direction: ltr;
+  display: inline-block;
+}
+pre {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text-md);
+  padding: 20px 24px;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  direction: ltr;
+  text-align: left;
+  line-height: 1.8;
+}
+pre .key   { color: var(--tk-bright); }
+pre .val   { color: #fbbf24; }
+pre .cmt   { color: var(--text-xs); }
+
+/* ── LAYOUT ── */
+.container { max-width: 980px; margin: 0 auto; padding: 0 36px; }
+.section { padding: 80px 0; }
+.section-alt { background: var(--bg-inset); }
+.divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.mt-8  { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-32 { margin-top: 32px; }
+
+/* ── SECTION LABELS ── */
+.sec-label {
+  font-size: 0.68em; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--tk); display: block; margin-bottom: 10px;
+}
+.sec-title {
+  font-size: 1.85em; font-weight: 900; color: var(--text);
+  line-height: 1.25; margin-bottom: 14px;
+}
+.sec-desc {
+  font-size: 0.95em; color: var(--text-md);
+  max-width: 680px; line-height: 1.85; margin-bottom: 44px;
+}
+
+/* ── HERO ── */
+.hero { padding: 96px 0 72px; position: relative; overflow: hidden; }
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(20,184,166,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(96,165,250,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 0.72em; font-weight: 600; color: var(--text-xs);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 3em; font-weight: 900; line-height: 1.15;
+  margin-bottom: 22px; color: var(--text);
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--tk-bright), #60a5fa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc { font-size: 1.05em; color: var(--text-md); max-width: 620px; margin-bottom: 48px; line-height: 1.85; }
+.stats-row { display: flex; gap: 36px; flex-wrap: wrap; }
+.stat .num  { font-size: 2.4em; font-weight: 900; color: var(--tk); line-height: 1; }
+.stat .lbl  { font-size: 0.75em; color: var(--text-sm); margin-top: 5px; }
+
+/* ── CHANGE LOG ── */
+.changelog { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 0; }
+.cl-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+}
+.cl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.cl-dot.add { background: var(--green); }
+.cl-dot.remove { background: var(--red); }
+.cl-dot.change { background: var(--yellow); }
+.cl-text { font-size: 0.8em; color: var(--text-md); line-height: 1.6; }
+.cl-text strong { color: var(--text); font-weight: 700; }
+
+/* ── PAIN GRID ── */
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pain-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+}
+.pain-tag {
+  font-size: 0.65em; font-weight: 700; color: var(--text-xs);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 10px; display: block;
+}
+.pain-card h3 { font-size: 0.95em; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.pain-card p  { font-size: 0.83em; color: var(--text-md); line-height: 1.75; }
+
+/* ── ARCH LAYERS ── */
+.arch-stack { display: flex; flex-direction: column; }
+.arch-layer {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px 22px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  position: relative;
+}
+.arch-layer:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.arch-layer:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+.arch-layer + .arch-layer { border-top: none; }
+.arch-connector {
+  display: flex; justify-content: flex-start; padding-right: 37px;
+  color: var(--border-md); font-size: 1.1em; line-height: 1;
+  padding-top: 2px; padding-bottom: 2px;
+  border-right: 1px solid var(--border); border-left: none;
+  margin-right: 22px;
+}
+.arch-num {
+  min-width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7em; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+}
+.arch-body { flex: 1; }
+.arch-title { font-size: 0.88em; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.arch-sub   { font-size: 0.78em; color: var(--text-sm); line-height: 1.65; }
+.arch-badge {
+  font-size: 0.63em; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; white-space: nowrap; flex-shrink: 0; align-self: flex-start; margin-top: 3px;
+}
+.l1 .arch-num { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+.l1 .arch-badge { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+.l2 .arch-num { background: var(--tk-bg); color: var(--tk-bright); }
+.l2 .arch-badge { background: var(--tk-bg); color: var(--tk-bright); border: 1px solid var(--tk-border); }
+.l3 .arch-num { background: var(--green-bg); color: var(--green); }
+.l3 .arch-badge { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.l4 .arch-num { background: var(--shared-bg); color: var(--shared); }
+.l4 .arch-badge { background: var(--shared-bg); color: var(--shared); border: 1px solid var(--border); }
+
+/* ── CALLOUT ── */
+.callout {
+  border-right: 3px solid var(--tk);
+  background: var(--tk-bg); border-top: 1px solid var(--tk-border);
+  border-bottom: 1px solid var(--tk-border); border-left: 1px solid var(--tk-border);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 18px; font-size: 0.86em; color: var(--text-md); line-height: 1.8;
+}
+.callout strong { color: var(--text); }
+.callout.warn   { border-color: var(--yellow); background: var(--yellow-bg); border-top-color: var(--yellow-border); border-bottom-color: var(--yellow-border); border-left-color: var(--yellow-border); }
+.callout.danger { border-color: var(--red);    background: var(--red-bg);    border-top-color: var(--red-border);    border-bottom-color: var(--red-border);    border-left-color: var(--red-border); }
+.callout.success{ border-color: var(--green);  background: var(--green-bg);  border-top-color: var(--green-border);  border-bottom-color: var(--green-border);  border-left-color: var(--green-border); }
+
+/* ── TAGS ── */
+.skill-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.65em; font-weight: 700; padding: 3px 10px;
+  border-radius: 20px; margin-bottom: 0;
+}
+.tag-mk     { background: var(--tk-bg); color: var(--tk-bright); border: 1px solid var(--tk-border); }
+.tag-chain  { background: var(--chain-bg); color: var(--chain); border: 1px solid var(--chain-border); }
+.tag-shared { background: var(--shared-bg); color: var(--shared); border: 1px solid var(--border); }
+.tag-new    { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.tag-removed{ background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-border); font-size:0.6em; }
+
+/* ── SKILL SECTION ── */
+.skill-section { padding: 44px 0 0; }
+.skill-section + .skill-section { border-top: 1px solid var(--border); }
+.skill-meta   { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.skill-title  { font-size: 1.5em; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.skill-lead   { font-size: 0.92em; color: var(--text-md); line-height: 1.75; margin-bottom: 18px; }
+.skill-body   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.skill-block  {
+  background: var(--bg-inset); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+}
+.skill-block-title {
+  font-size: 0.68em; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-xs); margin-bottom: 10px;
+}
+.skill-block p  { font-size: 0.86em; color: var(--text-md); line-height: 1.75; }
+.skill-block ul { padding-right: 14px; }
+.skill-block li { font-size: 0.86em; color: var(--text-md); line-height: 1.75; margin-bottom: 3px; }
+.skill-invoke   {
+  margin-top: 12px; padding: 11px 16px;
+  background: var(--bg-inset); border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: 0.8em; color: var(--text-sm);
+}
+.skill-note {
+  margin-top: 10px; padding: 10px 14px;
+  border-right: 2px solid var(--border-md);
+  font-size: 0.8em; color: var(--text-xs); line-height: 1.75;
+}
+
+/* ── STEP LIST ── */
+.step-list { display: flex; flex-direction: column; }
+.step-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 0; border-bottom: 1px solid var(--border);
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  min-width: 30px; height: 30px; border-radius: 50%;
+  background: var(--tk); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72em; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+}
+.step-title { font-size: 0.9em; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.step-desc  { font-size: 0.83em; color: var(--text-md); line-height: 1.7; }
+
+/* ── STANDARDS ── */
+.std-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 0; border-bottom: 1px solid var(--border);
+}
+.std-row:last-child { border-bottom: none; }
+.std-num {
+  min-width: 34px; height: 34px; border-radius: var(--radius);
+  background: var(--tk-bg); border: 1px solid var(--tk-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85em; flex-shrink: 0;
+}
+.std-title { font-size: 0.9em; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.std-desc  { font-size: 0.83em; color: var(--text-md); line-height: 1.7; }
+
+/* ── CONFIDENCE ── */
+.conf-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 18px; border-radius: var(--radius);
+  margin-bottom: 10px; border: 1px solid;
+}
+.conf-row.high { background: var(--green-bg);  border-color: var(--green-border); }
+.conf-row.mid  { background: var(--yellow-bg); border-color: var(--yellow-border); }
+.conf-row.low  { background: var(--red-bg);    border-color: var(--red-border); }
+.conf-icon { font-size: 1.2em; }
+.conf-label { font-weight: 800; font-size: 0.85em; min-width: 64px; }
+.conf-row.high .conf-label { color: var(--green); }
+.conf-row.mid  .conf-label { color: var(--yellow); }
+.conf-row.low  .conf-label { color: var(--red); }
+.conf-desc { font-size: 0.82em; color: var(--text-md); flex: 1; line-height: 1.6; }
+
+/* ── WORKFLOW CHAIN ── */
+.wf-chain { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.wf-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+.wf-row:last-child { border-bottom: none; }
+.wf-num {
+  min-width: 26px; height: 26px; background: var(--tk-dim); color: #fff;
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.68em; font-weight: 800; flex-shrink: 0;
+}
+.wf-skill  { font-family: var(--mono); font-size: 0.78em; font-weight: 700; color: var(--tk-bright); min-width: 200px; direction: ltr; }
+.wf-output { font-size: 0.8em; color: var(--text-sm); flex: 1; }
+
+/* ── CHAIN FLOW ── */
+.chain-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0; }
+.chain-step {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 12px;
+  font-size: 0.76em; font-weight: 600; color: var(--text-md);
+  font-family: var(--mono);
+}
+.chain-arrow { color: var(--text-xs); font-size: 0.9em; }
+
+/* ── QUICK REFERENCE TABLE ── */
+.qref-table {
+  width: 100%; border-collapse: collapse;
+  border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+  font-size: 0.84em;
+}
+.qref-table th {
+  background: var(--bg-raised); padding: 10px 16px;
+  text-align: right; font-weight: 700; font-size: 0.75em;
+  color: var(--text-sm); letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border-md);
+}
+.qref-table td {
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  color: var(--text-md); vertical-align: middle;
+}
+.qref-table tr:last-child td { border-bottom: none; }
+.qref-table tr:hover td { background: var(--bg-raised); }
+.qref-table td:first-child { color: var(--text-sm); font-style: italic; }
+.qref-table td code { font-size: 0.9em; }
+
+/* ── COLLAB ── */
+.collab-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: start; margin-top: 32px; }
+.collab-zone { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.collab-zone-title { font-size: 0.8em; font-weight: 800; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.mk-zone .collab-zone-title { color: var(--tk-bright); }
+.pm-zone .collab-zone-title { color: var(--blue); }
+.collab-divider {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 0 12px; gap: 24px;
+  min-height: 200px;
+}
+.collab-point {
+  background: var(--bg-raised); border: 1px solid var(--border-md);
+  border-radius: var(--radius); padding: 8px 12px;
+  font-size: 0.7em; color: var(--text-sm); text-align: center;
+  max-width: 120px; line-height: 1.5;
+}
+.collab-arrow { color: var(--text-xs); font-size: 1.2em; }
+.collab-item  { font-size: 0.78em; color: var(--text-md); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
+.collab-item:last-child { border-bottom: none; }
+.collab-item code { font-size: 0.9em; }
+
+/* ── SKILLS OVERVIEW GRID ── */
+.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.skill-card-sm {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  transition: border-color 0.15s;
+}
+.skill-card-sm:hover { border-color: var(--tk-dim); }
+.skill-card-sm .name {
+  font-family: var(--mono); font-size: 0.76em; font-weight: 700;
+  color: var(--tk-bright); display: block; margin-bottom: 5px; direction: ltr;
+}
+.skill-card-sm .desc { font-size: 0.78em; color: var(--text-sm); line-height: 1.5; }
+.skill-card-sm.new-skill  { border-color: var(--green-border); }
+.skill-card-sm.new-skill .name { color: var(--green); }
+.skill-card-sm.shared-sk  { border-color: var(--border); opacity: 0.7; }
+.skill-card-sm.shared-sk .name { color: var(--shared); }
+
+/* ── AUTHORITY TABLE ── */
+.auth-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.auth-table th { background: var(--bg-raised); padding: 10px 16px; font-size: 0.77em; font-weight: 700; color: var(--text-sm); text-align: right; border-bottom: 2px solid var(--border-md); }
+.auth-table td { padding: 10px 16px; font-size: 0.84em; border-bottom: 1px solid var(--border); color: var(--text-md); }
+.auth-table tr:last-child td { border-bottom: none; }
+.auth-allow { color: var(--green); }
+.auth-deny  { color: var(--red); font-weight: 600; }
+
+/* ── FORMULA ── */
+.formula {
+  background: var(--tk-bg); border: 1px solid var(--tk-border);
+  border-radius: var(--radius-lg); padding: 20px 24px;
+  font-size: 0.95em; font-weight: 600; color: var(--tk-bright);
+  line-height: 1.8; text-align: center; margin: 16px 0;
+}
+
+/* ── SUMMARY ── */
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 32px; }
+.summary-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+.summary-card .num { font-size: 2.4em; font-weight: 900; color: var(--tk); line-height: 1; }
+.summary-card .lbl { font-size: 0.8em; color: var(--text-sm); margin-top: 6px; }
+
+/* ── SHARED SKILL REF ── */
+.shared-ref {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.shared-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center; font-size: 1em;
+}
+.shared-body .sname { font-family: var(--mono); font-size: 0.78em; font-weight: 700; color: var(--shared); direction: ltr; display: block; }
+.shared-body .sdesc { font-size: 0.8em; color: var(--text-sm); margin-top: 5px; line-height: 1.6; }
+
+/* ── FOOTER ── */
+footer { background: var(--bg-inset); border-top: 1px solid var(--border); padding: 44px 0; }
+.footer-inner { max-width: 980px; margin: 0 auto; padding: 0 36px; display: flex; justify-content: space-between; align-items: center; }
+.footer-brand { font-size: 0.85em; font-weight: 700; color: var(--text); }
+.footer-sub   { font-size: 0.72em; color: var(--text-xs); margin-top: 5px; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 0.78em; color: var(--text-xs); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: var(--text-sm); }
+
+/* ── BADGE INLINE ── */
+.bi { display: inline-block; font-size: 0.63em; font-weight: 700; padding: 2px 7px; border-radius: 12px; vertical-align: middle; margin-right: 5px; }
+.bi.new  { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 740px) {
+  .pain-grid, .skill-body, .two-col, .three-col, .skills-grid, .summary-grid, .collab-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2em; }
+  .collab-divider { flex-direction: row; min-height: auto; padding: 16px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ HERO ══ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Product Team · Claude Skills · 2026</div>
+    <h1>Claude برای<br><em>تیم مارکتینگ</em></h1>
+    <p class="hero-desc">
+      یک سیستم اسکیل ساختاریافته که Claude را به یک شریک مارکتینگ آگاه از کانتکست تبدیل می‌کند —
+      با چارچوب‌های علمی، اقتصاد مارکتینگ قابل سنجش، و حافظه سازمانی که هیچ تصمیمی را گم نمی‌کند.
+    </p>
+    <div class="stats-row">
+      <div class="stat"><div class="num">15</div><div class="lbl">اسکیل مارکتینگ</div></div>
+      <div class="stat"><div class="num">6</div><div class="lbl">اسکیل اشتراکی با پروداکت</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">Chain Command</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">لایه کانتکست</div></div>
+    </div>
+  </div>
 </div>
+
+<!-- ══════════════════════════════════════════ CMO REVIEW ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">CMO Review · v3.0</span>
+    <h2 class="sec-title">تغییرات این نسخه</h2>
+    <p class="sec-desc">بررسی سیستماتیک از دید یک مدیر ارشد مارکتینگ — چه اضافه شد، چه حذف شد، چرا.</p>
+
+    <div class="changelog">
+      <div class="cl-item">
+        <div class="cl-dot add"></div>
+        <div class="cl-text"><strong>اضافه: /competitive-intel</strong> — رصد سیستماتیک رقبا. Brand Positioning بدون این اسکیل پایه‌ای ندارد.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot add"></div>
+        <div class="cl-text"><strong>اضافه: /pricing-strategy</strong> — قیمت‌گذاری قدرتمندترین lever مارکتینگ است. در نسخه قبل کاملاً غایب بود.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot remove"></div>
+        <div class="cl-text"><strong>حذف: /ai-intelligence</strong> — AI یک capability افقی است، نه اسکیل مستقل. باید داخل همه اسکیل‌ها باشد.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot remove"></div>
+        <div class="cl-text"><strong>حذف: /marketing-org</strong> — ساختار تیم و HR در حوزه People Ops است، نه اسکیل اجرایی مارکتینگ.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot add"></div>
+        <div class="cl-text"><strong>اضافه: Quick Reference</strong> — جدول «کدام موقعیت، کدام اسکیل» — در نسخه قبل CMO باید حدس می‌زد.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot add"></div>
+        <div class="cl-text"><strong>اضافه: Collaboration Map</strong> — نقاط تماس مارکتینگ با تیم پروداکت. هیچ وعده‌ای بدون هماهنگی.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot change"></div>
+        <div class="cl-text"><strong>بهبود: /brand-positioning</strong> — اضافه شد Positioning Statement template و نقش /competitive-intel به عنوان input.</div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-dot change"></div>
+        <div class="cl-text"><strong>بهبود: /decision-logger</strong> — مثال واقعی entry اضافه شد. ساختار ۸ فیلد با نمونه خروجی.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ CONTEXT ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Context</span>
+    <h2 class="sec-title">چه مشکلاتی را حل می‌کند</h2>
+    <p class="sec-desc">بدون این سیستم، مارکتینگ با یک مدل زبانی generic کار می‌کند که نه محصول، نه برند، نه تاریخچه تصمیمات شما را می‌شناسد.</p>
+
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="pain-tag">نقطه درد ۱</span>
+        <h3>تصمیمات مارکتینگ گم می‌شوند</h3>
+        <p>چرا این کانال را رها کردیم؟ چرا آن سگمنت را انتخاب کردیم؟ بدون حافظه سازمانی، دلایل تصمیمات در Slack گم می‌شوند و شش ماه بعد تیم همان اشتباه را تکرار می‌کند.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-tag">نقطه درد ۲</span>
+        <h3>کمپین‌ها بدون اقتصاد اجرا می‌شوند</h3>
+        <p>بدون CAC/LTV از ابتدا، اثربخشی کمپین قابل سنجش نیست. پیشنهادها بر اساس feeling پیش می‌روند. وقتی CFO می‌پرسد ROI چقدر بود، جواب نداریم.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-tag">نقطه درد ۳</span>
+        <h3>وعده‌های مارکتینگ از محصول جلو می‌زنند</h3>
+        <p>تیم مارکتینگ قابلیتی را وعده می‌دهد که هنوز در Roadmap نیست. هماهنگی با PM اتفاق نمی‌افتد تا لحظه‌ای که کاربر شکایت می‌کند.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-tag">نقطه درد ۴</span>
+        <h3>هر session از صفر شروع می‌شود</h3>
+        <p>Claude برند شما را نمی‌شناسد. روایت مرکزی را نمی‌داند. رقبا را نمی‌شناسد. هر بار باید همه چیز را توضیح دهید — وقت و کیفیت هر دو از دست می‌روند.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ ARCHITECTURE ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Design Principle</span>
+    <h2 class="sec-title">۴ لایه کانتکست</h2>
+    <p class="sec-desc">همان مدل ۴ لایه که برای PM و Designer پیاده شده — Policy ثابت است، Dynamic منحصر به فرد هر مارکتر.</p>
+
+    <div class="two-col">
+      <div class="arch-stack">
+        <div class="arch-layer l1">
+          <div class="arch-num">۱</div>
+          <div class="arch-body">
+            <div class="arch-title">لایه Policy — ثابت برای همه</div>
+            <div class="arch-sub">اسکیل‌ها، دستورها، قوانین اجرایی، فرمت خروجی. توسط CMO تعریف می‌شود. git pull برای آپدیت.</div>
+          </div>
+          <div class="arch-badge">یکسان برای همه</div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer l2">
+          <div class="arch-num">۲</div>
+          <div class="arch-body">
+            <div class="arch-title">موتور مصاحبه — یک‌بار اجرا</div>
+            <div class="arch-sub">مصاحبه ساختاریافته ۱۲ بخشی. خروجی: <code>principles.md</code> + تمام فایل‌های context اسکیل‌ها.</div>
+          </div>
+          <div class="arch-badge">یک‌بار اجرا</div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer l3">
+          <div class="arch-num">۳</div>
+          <div class="arch-body">
+            <div class="arch-title">لایه Dynamic — خاص هر پروژه</div>
+            <div class="arch-sub"><code>principles.md</code> · <code>decision-log.md</code> · روایت برند · OKR جاری · تاریخچه کمپین‌ها.</div>
+          </div>
+          <div class="arch-badge">منحصر به فرد</div>
+        </div>
+        <div class="arch-connector">↕</div>
+        <div class="arch-layer l4">
+          <div class="arch-num">۴</div>
+          <div class="arch-body">
+            <div class="arch-title">لایه Personal — خصوصی</div>
+            <div class="arch-sub">یادداشت‌های شخصی، ترجیحات فردی. gitignored. هیچ‌وقت commit نمی‌شود.</div>
+          </div>
+          <div class="arch-badge">خصوصی</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="callout success">
+          <strong>اصل کلیدی:</strong> وقتی CMO یک اسکیل را آپدیت می‌کند، فقط لایه Policy تغییر می‌کند. <code>principles.md</code> و <code>decision-log.md</code> هر مارکتر دست‌نخورده می‌ماند.
+        </div>
+
+        <div class="mt-24">
+          <div class="std-row">
+            <div class="std-num">📋</div>
+            <div class="std-body">
+              <div class="std-title">CMO مالک Policy است</div>
+              <div class="std-desc">قوانین، اسکیل‌ها، فرمت خروجی، سطوح اختیار، خطوط قرمز — یکبار تعریف، همه پیروی می‌کنند</div>
+            </div>
+          </div>
+          <div class="std-row">
+            <div class="std-num">✍️</div>
+            <div class="std-body">
+              <div class="std-title">مارکتر مالک Dynamic است</div>
+              <div class="std-desc"><code>principles.md</code> · <code>decision-log.md</code> · context اسکیل‌ها · روایت برند فعلی</div>
+            </div>
+          </div>
+          <div class="std-row">
+            <div class="std-num">🔒</div>
+            <div class="std-body">
+              <div class="std-title">فایل‌های خصوصی (gitignored)</div>
+              <div class="std-desc">یادداشت‌های شخصی، ترجیحات ارتباطی، کانتکست‌های محرمانه</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ QUICK REFERENCE ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Quick Reference</span>
+    <h2 class="sec-title">کدام موقعیت، کدام اسکیل؟</h2>
+    <p class="sec-desc">جدول مرجع سریع — بدون این جدول، باید تمام ۱۵ اسکیل را بخوانی تا بدانی از کجا شروع کنی.</p>
+
+    <table class="qref-table">
+      <thead>
+        <tr>
+          <th>موقعیت</th>
+          <th>اسکیل پیشنهادی</th>
+          <th>یا Chain Command</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>«یک ایده جدید از مدیریت آمد»</td><td><code>/marketing-logic</code></td><td>—</td></tr>
+        <tr><td>«نمی‌دانیم مشتری چه می‌خواهد»</td><td><code>/probe-discovery</code></td><td>—</td></tr>
+        <tr><td>«می‌خواهیم وارد بازار جدید شویم»</td><td><code>/competitive-intel</code> → <code>/probe-discovery</code></td><td><code>/go-to-market</code></td></tr>
+        <tr><td>«قیمت‌گذاری مدل جدید را تعریف کنیم»</td><td><code>/pricing-strategy</code></td><td>—</td></tr>
+        <tr><td>«کمپین لانچ می‌کنیم»</td><td><code>/acquisition-pull</code> + <code>/landing-architect</code></td><td><code>/campaign-launch</code></td></tr>
+        <tr><td>«روایت برند را بازبینی کنیم»</td><td><code>/brand-positioning</code></td><td><code>/brand-sprint</code></td></tr>
+        <tr><td>«رقیب جدیدی وارد شد»</td><td><code>/competitive-intel</code></td><td><code>/brand-sprint</code></td></tr>
+        <tr><td>«Churn بالا رفته»</td><td><code>/retention-audit</code></td><td><code>/retention-check</code></td></tr>
+        <tr><td>«ROI کمپین را بسنجیم»</td><td><code>/data-pinpoint</code></td><td><code>/retention-check</code></td></tr>
+        <tr><td>«بحران در شبکه‌های اجتماعی»</td><td><code>/crisis-management</code></td><td>—</td></tr>
+        <tr><td>«CRM جدید انتخاب کنیم»</td><td><code>/martech-platform</code></td><td>—</td></tr>
+        <tr><td>«محتوای ارگانیک شروع کنیم»</td><td><code>/organic-growth</code></td><td><code>/brand-sprint</code></td></tr>
+        <tr><td>«جلسه تصمیم مهمی داشتیم»</td><td><code>/decision-logger</code></td><td>— (اتوماتیک در chains)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ OUTPUT STANDARDS ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Layer 1 · Policy</span>
+    <h2 class="sec-title">استانداردهای خروجی</h2>
+    <p class="sec-desc">تمامی خروجی‌های ایجنت بدون استثنا باید ساختار شش‌گانه زیر را داشته باشند. هر خروجی بدون این ساختار ناقص است.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="std-row">
+          <div class="std-num">۱</div>
+          <div class="std-body">
+            <div class="std-title">پیوست استراتژیک (OKR)</div>
+            <div class="std-desc">ارتباط اقدام پیشنهادی با اهداف کلیدی سازمان. بدون این بخش، هر پیشنهاد در هوا معلق است.</div>
+          </div>
+        </div>
+        <div class="std-row">
+          <div class="std-num">۲</div>
+          <div class="std-body">
+            <div class="std-title">مهندسی شاخص‌ها (Marketing Economics)</div>
+            <div class="std-desc">برآورد کمی از CAC، LTV و ROI. پایداری اقتصادی باید مستند باشد — نه تخمین شفاهی.</div>
+          </div>
+        </div>
+        <div class="std-row">
+          <div class="std-num" style="background:var(--green-bg);border-color:var(--green-border);">۳</div>
+          <div class="std-body">
+            <div class="std-title">سطح اطمینان <span class="bi new">🆕</span></div>
+            <div class="std-desc">🟢 داده واقعی · 🟡 فرضیه معقول · 🔴 نیاز به اعتبارسنجی. در هر خروجی درج می‌شود.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="std-row">
+          <div class="std-num">۴</div>
+          <div class="std-body">
+            <div class="std-title">تحلیل ریسک (Pre-mortem)</div>
+            <div class="std-desc">نقاط شکست احتمالی + Contingency Plans. این بخش اجباری است — نه اختیاری.</div>
+          </div>
+        </div>
+        <div class="std-row">
+          <div class="std-num">۵</div>
+          <div class="std-body">
+            <div class="std-title">مرزهای عملیاتی (Out-of-Scope)</div>
+            <div class="std-desc">لیست صریح مواردی که در این اقدام لحاظ نمی‌شوند. جلوگیری از Scope Creep.</div>
+          </div>
+        </div>
+        <div class="std-row">
+          <div class="std-num" style="background:var(--green-bg);border-color:var(--green-border);">۶</div>
+          <div class="std-body">
+            <div class="std-title">طبقه‌بندی اقدام <span class="bi new">🆕</span></div>
+            <div class="std-desc">⚡ <strong>Quick Win</strong> (زیر ۲ هفته) یا 🏗️ <strong>Strategic Initiative</strong> (نیاز به برنامه‌ریزی)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="formula">
+      «اگر [تغییر] انجام شود، انتظار داریم [متریک] به میزان [X] تغییر کند زیرا [دلیل علمی/بیزنسی].»<br>
+      <span style="font-size:0.75em;opacity:0.7;">این فرمت برای تمام پیشنهادات کمپین و تغییر مسیر الزامی است</span>
+    </div>
+
+    <div class="mt-24">
+      <div class="conf-row high"><span class="conf-icon">🟢</span><span class="conf-label">بالا</span><span class="conf-desc">داده واقعی و اندازه‌گیری‌شده — قابل اتکا برای تخصیص بودجه فوری</span></div>
+      <div class="conf-row mid"><span class="conf-icon">🟡</span><span class="conf-label">متوسط</span><span class="conf-desc">فرضیه معقول با شواهد غیرمستقیم — تأیید اضافی قبل از بودجه بزرگ</span></div>
+      <div class="conf-row low"><span class="conf-icon">🔴</span><span class="conf-label">پایین</span><span class="conf-desc">بهترین تخمین موجود — حتماً قبل از اجرا اعتبارسنجی شود</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ SKILLS OVERVIEW ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Skills Reference</span>
+    <h2 class="sec-title">نقشه کل اسکیل‌ها</h2>
+    <p class="sec-desc">هر اسکیل یک workflow متمرکز و context-aware است. مستقیم فراخوانی کنید یا chain commands آن‌ها را در توالی اجرا می‌کنند.</p>
+
+    <div style="margin-bottom:10px;font-size:0.78em;font-weight:700;color:var(--text-xs);letter-spacing:0.05em;text-transform:uppercase;">اسکیل‌های اختصاصی مارکتینگ — ۱۵ اسکیل</div>
+    <div class="skills-grid">
+      <div class="skill-card-sm"><span class="name">/marketing-logic</span><div class="desc">قطب‌نمای علمی — هر ایده را با منطق مارکتینگ تطبیق می‌دهد</div></div>
+      <div class="skill-card-sm"><span class="name">/probe-discovery</span><div class="desc">مشتری‌پژوهی دقیق — Pain، Need، Desire با BANT</div></div>
+      <div class="skill-card-sm"><span class="name">/strategy-one-page</span><div class="desc">GTM Plan یک‌صفحه‌ای با OKR و تحلیل ریسک</div></div>
+      <div class="skill-card-sm new-skill"><span class="name">/competitive-intel 🆕</span><div class="desc">رصد سیستماتیک رقبا — input اصلی برای Brand Positioning</div></div>
+      <div class="skill-card-sm new-skill"><span class="name">/pricing-strategy 🆕</span><div class="desc">قیمت‌گذاری به عنوان lever استراتژیک مارکتینگ</div></div>
+      <div class="skill-card-sm"><span class="name">/acquisition-pull</span><div class="desc">معماری کمپین‌های جذب و Channel Mastery</div></div>
+      <div class="skill-card-sm"><span class="name">/landing-architect</span><div class="desc">لندینگ با FABV و قانون ۵ ثانیه</div></div>
+      <div class="skill-card-sm"><span class="name">/organic-growth</span><div class="desc">SEO، محتوا و Community Building</div></div>
+      <div class="skill-card-sm"><span class="name">/growth-engine</span><div class="desc">Acquisition Loops و AB Testing</div></div>
+      <div class="skill-card-sm"><span class="name">/retention-audit</span><div class="desc">Cohort Analysis و نقاط ریزش</div></div>
+      <div class="skill-card-sm"><span class="name">/brand-positioning</span><div class="desc">مزیت رقابتی پایدار با 7 Powers</div></div>
+      <div class="skill-card-sm"><span class="name">/crisis-management</span><div class="desc">بحران برند — پاسخ در ۲ ساعت</div></div>
+      <div class="skill-card-sm"><span class="name">/martech-platform</span><div class="desc">معمار MarTech، CRM و اتوماسیون</div></div>
+      <div class="skill-card-sm"><span class="name">/data-pinpoint</span><div class="desc">Attribution Model و داشبورد BI</div></div>
+      <div class="skill-card-sm"><span class="name">/decision-logger</span><div class="desc">حافظه سازمانی — هیچ تصمیمی گم نمی‌شود</div></div>
+    </div>
+
+    <div style="margin-top:24px;margin-bottom:10px;font-size:0.78em;font-weight:700;color:var(--text-xs);letter-spacing:0.05em;text-transform:uppercase;">اسکیل‌های اشتراکی با تیم پروداکت — ۶ اسکیل</div>
+    <div class="skills-grid">
+      <div class="skill-card-sm shared-sk"><span class="name">/prompt-optimizer</span><div class="desc">بهینه‌سازی پرامپت — ضروری برای بریف آژانس</div></div>
+      <div class="skill-card-sm shared-sk"><span class="name">/presentation-style</span><div class="desc">HTML slide deck استاندارد برای گزارش به مدیریت</div></div>
+      <div class="skill-card-sm shared-sk"><span class="name">/wireframe-generator</span><div class="desc">وایرفریم لندینگ با تمام state ها</div></div>
+      <div class="skill-card-sm shared-sk"><span class="name">/task-writer</span><div class="desc">تسک Linear با ساختار ۴بخشی</div></div>
+      <div class="skill-card-sm shared-sk"><span class="name">/meeting-support</span><div class="desc">آجندا و action item جلسات کمپین</div></div>
+      <div class="skill-card-sm shared-sk"><span class="name">/design-system-check</span><div class="desc">بررسی کامپوننت‌های موجود قبل از درخواست طراحی</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ SKILLS DETAIL ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Skills Detail · Foundation</span>
+    <h2 class="sec-title">دسته ۱: بنیاد و استراتژی</h2>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">فاز کشف</span></div>
+      <div class="skill-title">marketing-logic</div>
+      <div class="skill-lead">هر ایده خام یا درخواست تیم را با منطق پایه مارکتینگ تطبیق بده — قبل از اینکه منابع اشتباه خرج شود.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«می‌خواهیم این کمپین را اجرا کنیم»، «مدیریت این ایده را داد»، «آیا این با استراتژی ما همخوانی دارد؟» — هر زمان که ایده خام نیاز به validation دارد قبل از شروع اجرا.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>مدل ذهنی مناسب (STP یا JTBD یا 7 Powers)</li>
+            <li>شفاف‌سازی نقش مارکتینگ در این تسک</li>
+            <li>انطباق با تریگرهای رفتاری مشتری</li>
+            <li>تشخیص انحراف استراتژیک احتمالی</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/marketing-logic [توصیف ایده یا درخواست]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">کشف بازار</span></div>
+      <div class="skill-title">probe-discovery</div>
+      <div class="skill-lead">مشتری‌پژوهی دقیق فراتر از حدس — شناسایی Pain، Need و Desire با ارزیابی BANT.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«نمی‌دانیم مشتری چه می‌خواهد»، «قبل از طراحی فیچر»، «می‌خواهیم وارد سگمنت جدیدی بشویم»، «Value Proposition ما واضح نیست».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">ارزیابی BANT</div>
+          <ul>
+            <li><strong>Budget:</strong> آیا بودجه خرید وجود دارد؟</li>
+            <li><strong>Authority:</strong> آیا این فرد تصمیم‌گیر است؟</li>
+            <li><strong>Need:</strong> آیا نیاز واقعی وجود دارد؟</li>
+            <li><strong>Timing:</strong> زمان‌بندی خرید چیست؟</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/probe-discovery [سگمنت یا بازار هدف]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
+      <div class="skill-title">competitive-intel</div>
+      <div class="skill-lead">رصد سیستماتیک رقبا — input اصلی برای Brand Positioning و Pricing Strategy. بدون این اسکیل، موقعیت‌یابی کور است.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«رقیب جدیدی وارد بازار شد»، «می‌خواهیم Brand Positioning را بازبینی کنیم»، «قبل از هر /go-to-market»، «مدل قیمت‌گذاری رقبا را بفهمیم».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>Competitive Matrix (جدول مقایسه ویژگی‌ها)</li>
+            <li>Gap Analysis — فرصت‌های استفاده‌نشده</li>
+            <li>Positioning Map بر اساس ابعاد کلیدی</li>
+            <li>پیشنهاد defensive و offensive moves</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/competitive-intel [نام رقبا یا حوزه بازار]</code></div>
+      <div class="skill-note">این اسکیل به عنوان input به <code>/brand-positioning</code> و <code>/pricing-strategy</code> تغذیه می‌دهد. در /brand-sprint به صورت خودکار اجرا می‌شود.</div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
+      <div class="skill-title">pricing-strategy</div>
+      <div class="skill-lead">قیمت‌گذاری به عنوان قدرتمندترین lever مارکتینگ — نه یک تصمیم مالی صرف، بلکه یک ابزار موقعیت‌یابی.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«مدل قیمت‌گذاری جدید تعریف کنیم»، «Freemium طراحی کنیم»، «قیمت را تغییر دهیم»، «pricing page را بازبینی کنیم»، «رقیب قیمت را کاهش داد».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">مدل‌های پوشش‌داده‌شده</div>
+          <ul>
+            <li>Value-based Pricing — بر اساس ارزش ادراک‌شده</li>
+            <li>Freemium / Usage-based — برای SaaS</li>
+            <li>Penetration vs Skimming</li>
+            <li>تحلیل Price Elasticity</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/pricing-strategy [محصول و بازار هدف]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۳ در /go-to-market</span></div>
+      <div class="skill-title">strategy-one-page</div>
+      <div class="skill-lead">اینسایت‌ها را به Strategic Intent و GTM Plan تبدیل کن — یک نقشه راه شفاف با OKR و تحلیل ریسک.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>وقتی داده‌های اکتشافی آماده است. پیش از لانچ کمپین، عرضه محصول، یا ورود به بازار جدید. <em>نه</em> در ابتدای کشف — ابتدا /probe-discovery اجرا کنید.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>اهداف OKR دوره جاری</li>
+            <li>اولویت‌بندی سگمنت‌ها</li>
+            <li>سناریوهای تخصیص بودجه</li>
+            <li>تحلیل ریسک (Pre-mortem)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/strategy-one-page [توصیف عرضه یا هدف]</code></div>
+    </div>
+
+    <hr class="divider">
+    <span class="sec-label">Skills Detail · Growth & Execution</span>
+    <h2 class="sec-title">دسته ۲: عملیات رشد و جذب</h2>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۵ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۱ در /campaign-launch</span></div>
+      <div class="skill-title">acquisition-pull</div>
+      <div class="skill-lead">طراحی کمپین‌های خلاقانه و Channel Mastery — با تمرکز بر CRO و تریگرهای فعال‌سازی.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«کمپین لانچ می‌کنیم»، «کدام کانال را انتخاب کنیم؟»، «نرخ تبدیل پایین است»، «بریف خلاقیت برای آژانس آماده کنیم».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>بریف کامل کمپین</li>
+            <li>Creative Brief — آماده تحویل به آژانس</li>
+            <li>کانال‌های بهینه با اولویت‌بندی</li>
+            <li>تخمین CAC به تفکیک کانال</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/acquisition-pull [توصیف کمپین و هدف]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۴ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۲ در /campaign-launch</span></div>
+      <div class="skill-title">landing-architect</div>
+      <div class="skill-lead">تبدیل استراتژی به ساختار محتوایی لندینگ‌پیج — بر اساس مثلث PND و ساختار FABV.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">ساختار FABV الزامی</div>
+          <ul>
+            <li><strong>Features:</strong> مشخصات فیزیکی و فنی</li>
+            <li><strong>Advantages:</strong> چرا این ویژگی‌ها برتری می‌دهند</li>
+            <li><strong>Benefits:</strong> بازده اقتصادی، فنی، اجتماعی</li>
+            <li><strong>Value:</strong> ارزش نهایی به صورت کمی (ROI)</li>
+          </ul>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">قوانین الزامی</div>
+          <ul>
+            <li><strong>قانون ۵ ثانیه:</strong> ۱) چه می‌فروشید ۲) چه سودی دارد ۳) قدم بعدی</li>
+            <li><strong>Friction Removal:</strong> شناسایی و حذف عوامل تردید در CTA</li>
+            <li><strong>Outcome visualization:</strong> نشان دادن نتیجه، نه محصول</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/landing-architect [محصول یا سرویس]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۳ در /brand-sprint</span></div>
+      <div class="skill-title">organic-growth</div>
+      <div class="skill-lead">کاهش وابستگی به کانال‌های پولی از طریق SEO، محتوا، و Community Building.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«CAC از کانال‌های پولی بالا رفته»، «می‌خواهیم Authority بسازیم»، «برنامه محتوایی بلندمدت»، «SEO شروع کنیم».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>استراتژی محتوا بر اساس intent مخاطب</li>
+            <li>تقویم محتوای ۳ ماهه</li>
+            <li>Topic Cluster با Pillar Pages</li>
+            <li>شاخص‌های DA/DR و ترافیک ارگانیک</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/organic-growth [حوزه محصول یا هدف]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">مقیاس‌پذیری</span></div>
+      <div class="skill-title">growth-engine</div>
+      <div class="skill-lead">ساخت Performance Engine برای Scaling سیستماتیک — Acquisition Loops و آزمایش داده‌محور.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>وقتی محصول به ثبات رسیده و هدف رشد سریع است. <em>نه</em> برای محصول در مرحله کشف — ابتدا /probe-discovery.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>Growth Model ریاضی</li>
+            <li>طراحی AB Test با فرضیه مشخص</li>
+            <li>Viral Loop Design</li>
+            <li>North Star Metric و محرک‌های آن</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/growth-engine [وضعیت رشد فعلی و هدف]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۱ در /retention-check</span></div>
+      <div class="skill-title">retention-audit</div>
+      <div class="skill-lead">نگهبان دارایی‌های فعلی — تحلیل Cohort برای شناسایی دقیق نقاط ریزش.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«Churn بالا رفته»، «نمی‌دانیم کجا مشتریان را از دست می‌دهیم»، «برنامه وفاداری طراحی کنیم». این اسکیل برای بررسی وضعیت موجود است — برای تعریف اولیه، /probe-discovery.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>Cohort Analysis با نقاط ریزش دقیق</li>
+            <li>Deep Activation triggers</li>
+            <li>استراتژی Reactivation</li>
+            <li>پیشنهاد Loyalty Program</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/retention-audit [وضعیت فعلی و داده‌های موجود]</code></div>
+    </div>
+
+    <hr class="divider">
+    <span class="sec-label">Skills Detail · Positioning & Tech</span>
+    <h2 class="sec-title">دسته ۳: تمایز و زیرساخت</h2>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۲ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۲ در /brand-sprint</span></div>
+      <div class="skill-title">brand-positioning</div>
+      <div class="skill-lead">ایجاد تمایز استراتژیک پایدار بر اساس مدل 7 Powers — با /competitive-intel به عنوان input اجباری.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«رقیب جدید وارد شد»، «روایت برند بازبینی کنیم»، «Positioning Statement نداریم»، «آماده‌سازی برای بازار جدید». ابتدا /competitive-intel اجرا کنید.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>Positioning Statement نهایی</li>
+            <li>روایت مرکزی برند (فیلتر کپی)</li>
+            <li>تحلیل 7 Powers در بازار</li>
+            <li>Brand Governance Guidelines</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/brand-positioning [محصول و بازار رقابتی]</code></div>
+      <div class="skill-note">روایت مرکزی برند که این اسکیل تولید می‌کند، فیلتر نهایی تأیید تمام کپی‌رایتینگ‌ها در سیستم می‌شود.</div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
+      <div class="skill-title">crisis-management</div>
+      <div class="skill-lead">حفاظت از اعتبار برند در بحران — پروتکل پاسخ ۴ مرحله‌ای با پیام اولیه در ۲ ساعت.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«بازخوردهای منفی گسترده»، «اشتباه در محصول/سرویس»، «حمله رسانه‌ای رقیب»، «کاربران در توییتر ناراضی هستند». سرعت پاسخ‌دهی حیاتی است.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">پروتکل ۴ مرحله‌ای</div>
+          <ul>
+            <li><strong>ارزیابی فوری:</strong> شدت، گستره، منشأ</li>
+            <li><strong>پیام اولیه:</strong> شفاف، انسانی (حداکثر ۲ ساعت)</li>
+            <li><strong>برنامه اصلاح:</strong> اقدامات قابل سنجش (۲۴ ساعت)</li>
+            <li><strong>پایش مستمر:</strong> گزارش‌دهی تا رفع بحران</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/crisis-management [توصیف بحران و وضعیت فعلی]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span></div>
+      <div class="skill-title">martech-platform</div>
+      <div class="skill-lead">معمار زیرساخت MarTech — انتخاب، پیاده‌سازی و یکپارچه‌سازی CRM و اتوماسیون.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«CRM جدید انتخاب کنیم»، «اتوماسیون ایمیل راه بیندازیم»، «جریان داده بین ابزارها خراب است»، «MarTech Stack بررسی کنیم».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>نقشه اکوسیستم MarTech</li>
+            <li>بریف اتوماسیون برای تیم توسعه</li>
+            <li>بریف فنی API و Integration</li>
+            <li>مقایسه ابزارهای جایگزین</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/martech-platform [نیاز یا چالش تکنولوژی]</code></div>
+    </div>
+
+    <hr class="divider">
+    <span class="sec-label">Skills Detail · Analytics & Memory</span>
+    <h2 class="sec-title">دسته ۴ و ۵: تحلیل و حافظه</h2>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۲ در /retention-check</span></div>
+      <div class="skill-title">data-pinpoint</div>
+      <div class="skill-lead">تصمیم‌گیری داده‌محور دقیق — Attribution Model و داشبورد مدیریتی. اثربخشی واقعی هر کانال را نشان می‌دهد.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«کدام کانال واقعاً فروش آورده؟»، «ROI کمپین را بسنجیم»، «داشبورد مدیریتی بسازیم»، «Attribution Model انتخاب کنیم».</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">خروجی‌های کلیدی</div>
+          <ul>
+            <li>تحلیل Attribution Model (Multi-touch)</li>
+            <li>گزارش‌های بصری BI</li>
+            <li>مسیرهای طلایی فروش</li>
+            <li>نقاط بهینه‌سازی با اولویت ROI</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/data-pinpoint [سوال تحلیلی یا داده‌های موجود]</code></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 بهبودیافته</span><span class="skill-tag tag-chain">مرحله نهایی در همه chains</span></div>
+      <div class="skill-title">decision-logger</div>
+      <div class="skill-lead">حافظه سازمانی ایجنت — تمام تصمیمات کلیدی، تغییرات اسکوپ، و فرضیات اثبات/رد‌شده ثبت می‌شوند.</div>
+      <div class="skill-body">
+        <div class="skill-block">
+          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
+          <p>«جلسه تمام شد و چیزی تصمیم گرفتیم»، «چرا آن کانال را رها کردیم؟»، «اسکوپ را کاهش دادیم ولی ثبت نشد». توسط تمام chain commands به صورت خودکار در انتها فراخوانی می‌شود.</p>
+        </div>
+        <div class="skill-block">
+          <div class="skill-block-title">ساختار ۸ فیلد — نمونه واقعی</div>
+          <pre><span class="key">تاریخ:</span>      <span class="val">2026-03-15</span>
+<span class="key">پروژه:</span>      <span class="val">Q2 Campaign — SaaS Segment</span>
+<span class="key">تصمیم:</span>      <span class="val">کانال LinkedIn را متوقف کردیم</span>
+<span class="key">چرا:</span>        <span class="val">CAC از Google Ads 3x بالاتر بود</span>
+<span class="key">فرضیه:</span>      <span class="val">H3 — LinkedIn برای B2C موثر نیست</span>
+<span class="key">تأیید:</span>      <span class="val">Sara M. — CMO</span>
+<span class="key">اسکیل:</span>      <span class="val">/data-pinpoint</span>
+<span class="key">وضعیت:</span>     <span class="val">تأیید‌شده</span></pre>
+        </div>
+      </div>
+      <div class="skill-invoke">فراخوانی: <code>/decision-logger [توصیف تصمیم]</code> — یا خودکار در انتهای هر chain command</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ COLLABORATION ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Cross-Functional</span>
+    <h2 class="sec-title">نقاط تماس با تیم پروداکت</h2>
+    <p class="sec-desc">مارکتینگ و پروداکت در ۶ نقطه همپوشانی دارند. اسکیل‌های اشتراکی همان خروجی‌ها را با همان فرمت تولید می‌کنند.</p>
+
+    <div class="collab-grid">
+      <div class="collab-zone mk-zone">
+        <div class="collab-zone-title">مارکتینگ (تیل)</div>
+        <div class="collab-item">🔍 <code>/probe-discovery</code> — کشف Pain مشتری</div>
+        <div class="collab-item">📋 <code>/strategy-one-page</code> — GTM Plan</div>
+        <div class="collab-item">🏷️ <code>/pricing-strategy</code> — مدل قیمت</div>
+        <div class="collab-item">📢 <code>/acquisition-pull</code> — کمپین جذب</div>
+        <div class="collab-item">📊 <code>/data-pinpoint</code> — Attribution</div>
+        <div class="collab-item">🧠 <code>/decision-logger</code> — حافظه</div>
+      </div>
+
+      <div class="collab-divider">
+        <div class="collab-point">Pain → Feature Brief</div>
+        <div class="collab-arrow">↔</div>
+        <div class="collab-point">GTM ↔ Roadmap sync</div>
+        <div class="collab-arrow">↔</div>
+        <div class="collab-point">Wireframe handoff</div>
+        <div class="collab-arrow">↔</div>
+        <div class="collab-point">Launch coordination</div>
+      </div>
+
+      <div class="collab-zone pm-zone">
+        <div class="collab-zone-title">پروداکت (آبی)</div>
+        <div class="collab-item">🔬 <code>/problem-framing</code> — تعریف DOD</div>
+        <div class="collab-item">🗺️ <code>/feature-spec</code> — مشخصات فیچر</div>
+        <div class="collab-item">⚙️ <code>/feature-dependency</code> — وابستگی‌ها</div>
+        <div class="collab-item">🎨 <code>/wireframe-generator</code> — وایرفریم</div>
+        <div class="collab-item">🚀 <code>/release-impact</code> — تحلیل انتشار</div>
+        <div class="collab-item">📝 <code>/decision-logger</code> — حافظه</div>
+      </div>
+    </div>
+
+    <div class="callout warn mt-24">
+      ⚠️ <strong>قانون هماهنگی:</strong> هیچ وعده مارکتینگ نباید فراتر از قابلیت‌های موجود یا Roadmap مصوب باشد. قبل از نهایی‌سازی هر GTM Plan، هماهنگی با PM الزامی است.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ CHAIN COMMANDS ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Chain Commands</span>
+    <h2 class="sec-title">۴ Chain Command</h2>
+    <p class="sec-desc">Chain commands چندین اسکیل را در توالی اجرا می‌کنند، بین هر مرحله منتظر تأیید می‌مانند، و یک خروجی یکپارچه تولید می‌کنند.</p>
+
+    <div style="margin-bottom:40px;">
+      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۷ اسکیل در توالی</span><span class="skill-tag tag-chain">منتظر تأیید</span></div>
+      <div class="skill-title">/go-to-market</div>
+      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">کامل‌ترین workflow مارکتینگ — از ایده اولیه تا ثبت نهایی. هیچ کمپینی بدون تحلیل بازار، هیچ بودجه‌ای بدون هدف.</p>
+      <div class="wf-chain">
+        <div class="wf-row"><span class="wf-num">۱</span><span class="wf-skill">/probe-discovery</span><span class="wf-output">شناسایی سگمنت هدف و دردهای مشتری</span></div>
+        <div class="wf-row"><span class="wf-num">۲</span><span class="wf-skill">/competitive-intel</span><span class="wf-output">رصد رقبا و Positioning Map</span></div>
+        <div class="wf-row"><span class="wf-num">۳</span><span class="wf-skill">/brand-positioning</span><span class="wf-output">مزیت رقابتی و روایت مرکزی برند</span></div>
+        <div class="wf-row"><span class="wf-num">۴</span><span class="wf-skill">/strategy-one-page</span><span class="wf-output">OKRها و سناریوهای تخصیص بودجه</span></div>
+        <div class="wf-row"><span class="wf-num">۵</span><span class="wf-skill">/landing-architect</span><span class="wf-output">مقصد نهایی و پیام تبدیل</span></div>
+        <div class="wf-row"><span class="wf-num">۶</span><span class="wf-skill">/acquisition-pull</span><span class="wf-output">بریف خلاقانه و کانال‌های جذب</span></div>
+        <div class="wf-row"><span class="wf-num">۷</span><span class="wf-skill">/decision-logger</span><span class="wf-output">ثبت در حافظه سازمانی</span></div>
+      </div>
+      <div class="skill-invoke mt-16">فراخوانی: <code>/go-to-market [توصیف محصول یا کمپین]</code></div>
+    </div>
+
+    <div style="margin-bottom:40px;padding-top:36px;border-top:1px solid var(--border);">
+      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۲ اسکیل</span></div>
+      <div class="skill-title">/retention-check</div>
+      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">تحلیل کامل ریزش + Attribution — همه چیزی که برای جلسه بازبینی وفاداری نیاز دارید.</p>
+      <div class="chain-flow">
+        <span class="chain-step">/retention-audit</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">/data-pinpoint</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">گزارش یکپارچه ریزش + Attribution</span>
+      </div>
+      <div class="skill-invoke mt-16">فراخوانی: <code>/retention-check [دوره زمانی یا سگمنت]</code></div>
+    </div>
+
+    <div style="margin-bottom:40px;padding-top:36px;border-top:1px solid var(--border);">
+      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۳ اسکیل</span></div>
+      <div class="skill-title">/brand-sprint</div>
+      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">از رصد رقبا تا روایت برند و تقویم محتوا — در یک session.</p>
+      <div class="chain-flow">
+        <span class="chain-step">/competitive-intel</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">/brand-positioning</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">/organic-growth</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">سند برند + تقویم محتوا</span>
+      </div>
+      <div class="skill-invoke mt-16">فراخوانی: <code>/brand-sprint [توصیف برند و بازار هدف]</code></div>
+    </div>
+
+    <div style="padding-top:36px;border-top:1px solid var(--border);">
+      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۲ اسکیل</span><span class="skill-tag tag-chain">نیاز به تأیید</span></div>
+      <div class="skill-title">/campaign-launch</div>
+      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">بریف کامل کمپین + لندینگ‌پیج — آماده تحویل به آژانس یا اجرای داخلی.</p>
+      <div class="chain-flow">
+        <span class="chain-step">/acquisition-pull</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">/landing-architect</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-step">بریف آژانس + Content Wireframe</span>
+      </div>
+      <div class="skill-invoke mt-16">فراخوانی: <code>/campaign-launch [توصیف کمپین و هدف]</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ SESSION INIT ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Protocol</span>
+    <h2 class="sec-title">پروتکل آغاز Session</h2>
+    <p class="sec-desc">اولین اقدام ایجنت در هر مکالمه جدید — بدون این ۴ سوال، ایجنت نمی‌داند در کجای پروژه قرار دارد.</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">۱</div>
+        <div>
+          <div class="step-title">وضعیت پروژه</div>
+          <div class="step-desc">جدید یا ادامه؟ اگر ادامه است، آخرین تصمیم در <code>decision-log.md</code> چیست؟</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">۲</div>
+        <div>
+          <div class="step-title">اسکوپ درخواست</div>
+          <div class="step-desc">این درخواست در کدام لایه است؟ استراتژی / اجرا / تحلیل / بازبینی</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">۳</div>
+        <div>
+          <div class="step-title">محدودیت‌های فعال</div>
+          <div class="step-desc">محدودیت بودجه، زمان، یا منابع فنی خاصی وجود دارد؟</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">۴</div>
+        <div>
+          <div class="step-title">صاحب تصمیم</div>
+          <div class="step-desc">چه کسی خروجی نهایی را تأیید می‌کند؟ (برای فیلد Sign-off Required)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn mt-16">
+      ⚠️ اگر پاسخ کافی ندادید، ایجنت <strong>با ذکر صریح فرضیاتی که گرفته</strong> پیش می‌رود — بدون توقف کامل.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ SHARED SKILLS ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Shared Skills</span>
+    <h2 class="sec-title">اسکیل‌های اشتراکی با پروداکت</h2>
+    <p class="sec-desc">این ۶ اسکیل بین PM، Designer، و Marketing مشترک‌اند. خروجی‌هایشان با فرمت استاندارد تیم سازگار است.</p>
+
+    <div class="two-col">
+      <div class="shared-ref">
+        <div class="shared-icon">🔧</div>
+        <div class="shared-body">
+          <span class="sname">/prompt-optimizer</span>
+          <div class="sdesc">آنالیز و بازنویسی پرامپت. ضروری برای بریف آژانس‌ها و ارتباطات فنی — خطا و هزینه توکن را کاهش می‌دهد.</div>
+        </div>
+      </div>
+      <div class="shared-ref">
+        <div class="shared-icon">📊</div>
+        <div class="shared-body">
+          <span class="sname">/presentation-style</span>
+          <div class="sdesc">HTML slide deck استاندارد برای گزارش به مدیریت. همین پرزنتیشن با این اسکیل ساخته شده.</div>
+        </div>
+      </div>
+      <div class="shared-ref">
+        <div class="shared-icon">🖼️</div>
+        <div class="shared-body">
+          <span class="sname">/wireframe-generator</span>
+          <div class="sdesc">وایرفریم تعاملی HTML برای لندینگ‌پیج‌های کمپین — تمام state ها را قبل از طراحی نشان می‌دهد.</div>
+        </div>
+      </div>
+      <div class="shared-ref">
+        <div class="shared-icon">✅</div>
+        <div class="shared-body">
+          <span class="sname">/task-writer</span>
+          <div class="sdesc">تبدیل هر خروجی مارکتینگ به تسک Linear با ساختار ۴بخشی: Context / Story / DOD / Out-of-Scope.</div>
+        </div>
+      </div>
+      <div class="shared-ref">
+        <div class="shared-icon">📅</div>
+        <div class="shared-body">
+          <span class="sname">/meeting-support</span>
+          <div class="sdesc">آجندا قبل از جلسه‌های کمپین، استخراج Action Item و تصمیمات بعد از جلسه.</div>
+        </div>
+      </div>
+      <div class="shared-ref">
+        <div class="shared-icon">🧩</div>
+        <div class="shared-body">
+          <span class="sname">/design-system-check</span>
+          <div class="sdesc">قبل از درخواست طراحی جدید برای کمپین — کامپوننت‌های موجود را inventory می‌کند.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ AUTHORITY ══ -->
+<div class="section">
+  <div class="container">
+    <span class="sec-label">Layer 1 · Policy</span>
+    <h2 class="sec-title">سطوح اختیار و خطوط قرمز</h2>
+    <p class="sec-desc">ایجنت در چارچوب مشخصی کار می‌کند. این مرزها توسط CMO تعریف شده و تغییرناپذیرند.</p>
+
+    <table class="auth-table">
+      <thead>
+        <tr><th>حوزه</th><th>مجاز</th><th>ممنوع</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>💰 بودجه</td><td class="auth-allow">پیشنهاد سناریوهای تخصیص</td><td class="auth-deny">تغییر مستقیم بودجه مصوب</td></tr>
+        <tr><td>📈 Analytics</td><td class="auth-allow">خواندن داده و گزارش‌دهی</td><td class="auth-deny">نوشتن در پنل‌های تبلیغاتی</td></tr>
+        <tr><td>📢 انتشار</td><td class="auth-allow">پیشنهاد و آماده‌سازی محتوا</td><td class="auth-deny">انتشار خودکار بدون Sign-off</td></tr>
+        <tr><td>🔒 داده مشتریان</td><td class="auth-allow">داده تجمیعی و ناشناس</td><td class="auth-deny">ذخیره اطلاعات هویتی (PII)</td></tr>
+        <tr><td>🎯 وعده محصول</td><td class="auth-allow">قابلیت‌های موجود یا Roadmap مصوب</td><td class="auth-deny">قابلیت‌هایی که هنوز وجود ندارند</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn mt-24">
+      <strong>پروتکل حل تعارض:</strong> اگر دو اسکیل خروجی متعارض داشتند — تعارض را نام ببر ← هر دو گزینه با trade-off ← توصیه صریح ← تصمیم نهایی با مدیر.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ SUMMARY ══ -->
+<div class="section section-alt">
+  <div class="container">
+    <span class="sec-label">Summary</span>
+    <h2 class="sec-title">آنچه این سیستم تحویل می‌دهد</h2>
+
+    <div class="two-col">
+      <div>
+        <div class="std-row"><div class="std-num">🔍</div><div><div class="std-title">کشف تا استراتژی</div><div class="std-desc">probe-discovery → competitive-intel → brand-positioning → strategy-one-page</div></div></div>
+        <div class="std-row"><div class="std-num">💰</div><div><div class="std-title">اقتصاد مارکتینگ</div><div class="std-desc">pricing-strategy + data-pinpoint — هر تصمیم با CAC، LTV و ROI مستند</div></div></div>
+        <div class="std-row"><div class="std-num">🚀</div><div><div class="std-title">کمپین‌های دقیق</div><div class="std-desc">acquisition-pull + landing-architect — بریف آماده تحویل به آژانس</div></div></div>
+      </div>
+      <div>
+        <div class="std-row"><div class="std-num">🧠</div><div><div class="std-title">حافظه سازمانی</div><div class="std-desc">decision-logger در انتهای هر chain — هیچ تصمیمی گم نمی‌شود</div></div></div>
+        <div class="std-row"><div class="std-num">🤝</div><div><div class="std-title">همراستایی با پروداکت</div><div class="std-desc">۶ اسکیل اشتراکی — هیچ وعده‌ای خارج از Roadmap</div></div></div>
+        <div class="std-row"><div class="std-num">⚡</div><div><div class="std-title">Human-in-the-Loop</div><div class="std-desc">هر خروجی استراتژیک Sign-off Required دارد</div></div></div>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card"><div class="num">15</div><div class="lbl">اسکیل مارکتینگ</div></div>
+      <div class="summary-card"><div class="num">6</div><div class="lbl">اسکیل اشتراکی</div></div>
+      <div class="summary-card"><div class="num">4</div><div class="lbl">Chain Command</div></div>
+      <div class="summary-card"><div class="num">21</div><div class="lbl">تعداد کل دستور</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Product Team · Claude Skills · Marketing Agent</div>
+      <div class="footer-sub">v3.0 · CMO Reviewed · 2026</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/">Product Team Home</a>
+      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/product-manager-presentation.html">PM Guide</a>
+      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/product-designer-presentation.html">Designer Guide</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
