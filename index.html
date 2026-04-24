@@ -1461,29 +1461,28 @@
     <div class="eyebrow">Context</div>
     <h2 class="section-title">چهار مشکلی که <em>هر تیم مارکتینگی</em> با آن‌ها دست‌وپنجه نرم می‌کند</h2>
     <p class="section-intro">
-      وقتی Claude نه محصول، نه برند، نه تاریخچه تیم شما را می‌شناسد،
-      چهار مشکل تکرارشونده شکل می‌گیرد که روزانه بهره‌وری و کیفیت را تحلیل می‌برد.
+وقتی هوش مصنوعی (مثل Claude) از جزئیات محصول، هویت برند و سوابق تیم شما خبر نداشته باشد، به جای کمک کردن، وقتتان را می‌گیرد. این‌ها ۴ دردی است که هر روز با آن مواجهیم:
     </p>
 
     <div class="problem-grid">
       <div class="problem">
         <div class="problem-num">۰۱</div>
         <div class="problem-label">Pain Point 01</div>
-        <h3>تصمیمات مارکتینگ گم می‌شوند</h3>
+        <h3>فراموشی دلیل تصمیمات</h3>
         <p>چرا این کانال را رها کردیم؟ بدون حافظه سازمانی، دلایل تصمیمات در  گم می‌شوند. شش ماه بعد، تیم همان اشتباه را تکرار می‌کند.</p>
       </div>
 
       <div class="problem">
         <div class="problem-num">۰۲</div>
         <div class="problem-label">Pain Point 02</div>
-        <h3>کمپین‌ها بدون اقتصاد اجرا می‌شوند</h3>
+        <h3>خرج کردن بدون حساب‌وکتاب</h3>
         <p>بدون CAC و LTV از روز اول، اثربخشی کمپین قابل سنجش نیست. پیشنهادها حسی پیش می‌روند و وقتی CFO ROI را می‌پرسد، جواب روشنی نداریم.</p>
       </div>
 
       <div class="problem">
         <div class="problem-num">۰۳</div>
         <div class="problem-label">Pain Point 03</div>
-        <h3>وعده‌های مارکتینگ از محصول جلو می‌زنند</h3>
+        <h3>وعده‌ای که محصول نمی‌تواند برآورده کند</h3>
         <p>مارکتینگ قابلیتی را وعده می‌دهد که هنوز در Roadmap نیست. هماهنگی با PM تا لحظه شکایت کاربر اتفاق نمی‌افتد.</p>
       </div>
 
@@ -1512,8 +1511,7 @@
     <div class="eyebrow">Design Philosophy</div>
     <h2 class="section-title">تفاوت بین <em>prompt</em> و <em>سیستم</em></h2>
     <p class="section-intro">
-      prompt یک دستور یک‌باره است. سیستم workflow ساختاری مداوم — هر session را با context کامل آغاز می‌کند،
-      فرمت خروجی را الزامی می‌کند، و حافظه تصمیمات را حفظ می‌کند.
+پرامپت مثل یک سوال تصادفی از یک غریبه است؛ اما سیستم مثل کار کردن با همکارتان است که محصول را می‌شناسد، قوانین را بلد است و یادش نمی‌رود دیروز چه گفته‌اید.
     </p>
 
     <div class="two-col">
@@ -1552,8 +1550,6 @@
     <div class="eyebrow">Architecture · Four Layers</div>
     <h2 class="section-title">۴ لایه کانتکست</h2>
     <p class="section-intro">
-      همان مدل ۴ لایه‌ای که برای PM و Designer پیاده شده است. Policy ثابت و زیر دست CMO؛
-      Dynamic منحصر به هر مارکتر و مستقل از آپدیت‌های Policy.
     </p>
 
     <div class="layers-stack">
@@ -1593,14 +1589,8 @@
         <div class="layer-tag">خصوصی</div>
       </div>
     </div>
-
-    <div class="key-note">
-      <strong>اصل کلیدی:</strong> وقتی CMO یک اسکیل را آپدیت می‌کند، فقط لایه Policy تغییر می‌کند.
-      <code>principles.md</code> و <code>decision-log.md</code> هر مارکتر دست‌نخورده باقی می‌ماند.
-    </div>
   </div>
 </section>
-
 <section>
   <div class="container">
     <div class="eyebrow">Layer 1 · Policy</div>
@@ -1609,50 +1599,57 @@
       این قوانین به عنوان «قانون اساسی» ایجنت عمل می‌کنند و تضمین می‌کنند که تمام خروجی‌ها با استراتژی کلان، واقعیت فنی و هویت برند هماهنگ باشند.
     </p>
 
-    <div class="std-grid" style="margin-bottom: 24px;">
+    <div class="std-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; direction: rtl;">
+      
       <div class="std-card">
         <div class="std-num">۰۱</div>
         <h4>Hypothesis-Led</h4>
-        <p>الزام به ارائه هر پیشنهاد در قالب: «اگر [تغییر]، انتظار داریم [متریک] به میزان [X] تغییر کند زیرا [دلیل تحلیلی]».</p>
+        <p>الزام به ارائه هر پیشنهاد در قالب: «اگر [تغییر]، انتظار داریم [متریک] به میزان [X] تغییر کند زیرا [دلیل تحلیلی]».
+        </p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۲</div>
         <h4>Technical-Reality</h4>
         <p>هیچ وعده مارکتینگ نباید فراتر از ظرفیت فنی محصول باشد. بازبینی وابستگی‌ها با تیم محصول پیش از نهایی‌سازی GTM الزامی است.</p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۳</div>
         <h4>Brand-Governance</h4>
         <p>تطبیق ۱۰۰٪ محتوا با هویت برند. کلاود موظف است از "روایت مرکزی" به عنوان فیلتر نهایی تایید کپی‌رایتینگ استفاده کند.</p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۴</div>
         <h4>Decision-Memory</h4>
         <p>ثبت خودکار "چرایی" تمام تصمیمات و تغییرات اسکوپ در <code>decision-log.md</code> برای حفظ حافظه استراتژیک سازمان.</p>
       </div>
-    </div>
 
-    <div class="std-grid">
       <div class="std-card">
         <div class="std-num">۰۵</div>
         <h4>Omnichannel Sync</h4>
         <p>بررسی خودکار همپوشانی پیام در تمام کانال‌ها (وب، سوشال، ایمیل) بر اساس کانتکست موجود در لایه Dynamic.</p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۶</div>
         <h4>5-Second Test</h4>
         <p>در لندینگ‌پیج، کاربر باید در ۵ ثانیه اول بفهمد: ۱. محصول چیست؟ ۲. چه سودی دارد؟ ۳. گام بعدی (CTA) چیست؟</p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۷</div>
         <h4>Budget Scenarios</h4>
         <p>ایجنت فقط مجاز به پیشنهاد سناریوهای تخصیص بودجه و تحلیل ROI است و حق تغییر مستقیم در بودجه‌های مصوب را ندارد.</p>
       </div>
+
       <div class="std-card">
         <div class="std-num">۰۸</div>
         <h4>Data Privacy</h4>
         <p>عدم ذخیره‌سازی اطلاعات هویتی مشتریان (PII). ایجنت صرفاً مجاز به تحلیل داده‌های تجمیعی و ناشناس است.</p>
       </div>
+
     </div>
   </div>
 </section>
@@ -1661,7 +1658,7 @@
 <section>
   <div class="container">
     <div class="eyebrow">Layer 2 · Interview Engine 🆕</div>
-    <h2 class="section-title">موتور مصاحبه — <em>یک‌بار می‌سازی، همیشه لود می‌شود</em></h2>
+    <h2 class="section-title">موتور مصاحبه</h2>
     <p class="section-intro">
       مسئله چهارم اینجا حل می‌شود      —
       یک‌بار اجرا، پروفایل کامل سازمان را می‌سازد، و در هر session بعدی خودکار لود می‌شود.
@@ -1670,7 +1667,6 @@
     <div class="interview-meta">
       <div>
         <div class="interview-meta-label">Duration</div>
-        <div class="interview-meta-val">۲۵–۳۵ دقیقه</div>
       </div>
       <div>
         <div class="interview-meta-label">Output</div>
@@ -2092,8 +2088,7 @@
     <div class="eyebrow">Skills Reference</div>
     <h2 class="section-title">نقشه کل اسکیل‌ها</h2>
     <p class="section-intro">
-      هر اسکیل یک workflow متمرکز و context-aware است، نه یک دستور کلی. می‌توان مستقیم فراخوانی کرد
-      یا از طریق chain commands در توالی اجرا کرد. جزئیات هر دسته در اسلایدهای بعدی.
+هر اسکیل مثل یک متخصص باسابقه، کانتکست بیزنس شما را می‌فهمد. این ابزارها هم به صورت تکی و هم به صورت «زنجیره‌ای» (برای انجام پروژه‌های چند مرحله‌ای) آماده‌ به کار هستند. در اسلایدهای بعد، جزئیات هر دسته را می‌بینید.
     </p>
 
     <div class="skills-header">
@@ -2102,21 +2097,18 @@
     </div>
 
     <div class="skills-grid">
-      <div class="skill-chip"><code>/marketing-logic</code><span>قطب‌نمای علمی</span></div>
-      <div class="skill-chip"><code>/probe-discovery</code><span>مشتری‌پژوهی BANT</span></div>
-      <div class="skill-chip"><code>/strategy-one-page</code><span>GTM Plan</span></div>
-      <div class="skill-chip"><code>/competitive-intel</code><span>🆕 رصد رقبا</span></div>
-      <div class="skill-chip"><code>/pricing-strategy</code><span>🆕 قیمت به‌عنوان lever</span></div>
-      <div class="skill-chip"><code>/acquisition-pull</code><span>کمپین جذب</span></div>
-      <div class="skill-chip"><code>/landing-architect</code><span>FABV + قانون ۵ ثانیه</span></div>
+      <div class="skill-chip"><code>/marketing-logic</code><span> فیلتر استراتژیک ایده‌ها</span></div>
+      <div class="skill-chip"><code>/probe-discovery</code><span> کشف نیاز واقعی مشتری</span></div>
+      <div class="skill-chip"><code>/strategy-one-page</code><span>نقشه راه عرضه به بازار</span></div>
+      <div class="skill-chip"><code>/competitive-intel</code><span> رصد رقبا</span></div>
+      <div class="skill-chip"><code>/acquisition-pull</code><span>طراحی کمپین‌های جذب</span></div>
+      <div class="skill-chip"><code>/landing-architect</code><span> لنیدنگ محصول برای جذب مشتری</span></div>
       <div class="skill-chip"><code>/organic-growth</code><span>SEO و محتوا</span></div>
       <div class="skill-chip"><code>/growth-engine</code><span>AB Test و Loops</span></div>
-      <div class="skill-chip"><code>/retention-audit</code><span>Cohort Analysis</span></div>
-      <div class="skill-chip"><code>/brand-positioning</code><span>7 Powers</span></div>
-      <div class="skill-chip"><code>/crisis-management</code><span>🆕 پروتکل بحران</span></div>
-      <div class="skill-chip"><code>/martech-platform</code><span>CRM و اتوماسیون</span></div>
-      <div class="skill-chip"><code>/data-pinpoint</code><span>Attribution</span></div>
-      <div class="skill-chip"><code>/decision-logger</code><span>🆕 حافظه سازمانی</span></div>
+      <div class="skill-chip"><code>/retention-audit</code><span>نگهداشت کاربر</span></div>
+      <div class="skill-chip"><code>/brand-positioning</code><span>طراحی تمایز و هویت برند</span></div>
+      <div class="skill-chip"><code>/crisis-management</code><span> محافظت از اعتبار برند </span></div>
+      <div class="skill-chip"><code>/data-pinpoint</code><span>تحلیل دقیق مسیر سود</span></div>
     </div>
 
     <div class="skills-header">
@@ -2128,9 +2120,10 @@
       <div class="skill-chip"><code>/prompt-optimizer</code><span>بهینه‌سازی پرامپت</span></div>
       <div class="skill-chip"><code>/presentation-style</code><span>HTML slide deck</span></div>
       <div class="skill-chip"><code>/wireframe-generator</code><span>وایرفریم لندینگ</span></div>
-      <div class="skill-chip"><code>/task-writer</code><span>تسک Linear</span></div>
-      <div class="skill-chip"><code>/meeting-support</code><span>آجندا و action item</span></div>
-      <div class="skill-chip"><code>/design-system-check</code><span>کامپوننت‌های موجود</span></div>
+      <div class="skill-chip"><code>/task-writer</code><span>مترجم زبان مارکتینگ به زبانِ اجرایی</span></div>
+      <div class="skill-chip"><code>/meeting-support</code><span>خروجی عملیاتی از جلسات</span></div>
+      <div class="skill-chip"><code>/design-system-check</code><span>هماهنگی با تیم دیزاین</span></div>
+      <div class="skill-tags"><span class="skill-tag">فاز کشف</span></div>
     </div>
   </div>
 </section>
