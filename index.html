@@ -2448,107 +2448,223 @@
 </div>
 
 <!-- ========== OUTPUT STANDARDS (with OKR fallback) ========== -->
-<section>
-  <div class="container">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* --- استایل‌های پایه --- */
+        :root {
+            --bg-color: #0d0d0d;
+            --card-bg: #151515;
+            --accent-color: #ff8c42; /* نارنجی مطابق عکس */
+            --text-main: #e0e0e0;
+            --text-muted: #909090;
+            --border-color: #252525;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .section-intro {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        /* --- سیستم گرید برای هم‌اندازه شدن کارت‌ها --- */
+        .std-grid {
+            display: grid;
+            /* تعریف ۳ ستون مساوی */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            /* این خط جادویی باعث هم‌قد شدن تمام کارت‌ها در یک ردیف می‌شود */
+            align-items: stretch;
+        }
+
+        .std-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* کارت شماره ۵: اشغال کل ۳ ستون در دسکتاپ */
+        .card-full {
+            grid-column: span 3;
+            border: 1.5px solid var(--accent-color);
+            margin-top: 10px;
+        }
+
+        .std-num {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        h4 { margin: 0 0 12px 0; font-size: 1.2rem; }
+        
+        p { 
+            color: var(--text-muted); 
+            font-size: 0.95rem; 
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- استایل بخش Fallback داخلی (کارت ۵) --- */
+        .fallback-box {
+            margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .fallback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: #2a2a2a;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid #444;
+        }
+
+        .fallback-chain {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .fallback-step {
+            padding: 15px;
+            border-right: 1px solid #333;
+        }
+
+        .fallback-step:last-child { border-right: none; }
+
+        .level-tag {
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* --- واکنش‌گرایی برای موبایل --- */
+        @media (max-width: 900px) {
+            .std-grid { grid-template-columns: 1fr; }
+            .card-full { grid-column: span 1; }
+            .fallback-chain { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 500px) {
+            .fallback-chain { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
     <div class="eyebrow">Layer 1 · Policy · Output Standards</div>
     <h2 class="section-title">ساختار پنج‌گانه خروجی</h2>
     <p class="section-intro">
-      هر خروجی ایجنت بدون استثنا این ساختار پنج‌گانه را دارد. با یک نگاه،  می‌فهمیم
-      خروجی کجای پروژه است و چه سطح تأییدی نیاز دارد.
+        هر خروجی ایجنت بدون استثنا این ساختار پنج‌گانه را دارد. با یک نگاه، می‌فهمیم خروجی کجای پروژه است و چه سطح تأییدی نیاز دارد.
     </p>
 
     <div class="std-grid">
-      <div class="std-card">
-        <div class="std-num">۱</div>
-        <h4>پیوست به OKR</h4>
-        <p>این اقدام در خدمت کدام OKR است؟ </p>
-      </div>
-      <div class="std-card">
-        <div class="std-num">۲</div>
-        <h4>مهندسی شاخص‌ها</h4>
-        <p>برآورد کمی از CAC، LTV و ROI. پایداری اقتصادی باید مستند باشد — نه تخمین شفاهی.</p>
-      </div>
-      <div class="std-card">
-        <div class="std-num">۳</div>
-        <h4>سطح اطمینان</h4>
-        <p> سیستم شفاف می‌گوید: این حرف چقدر سندیت دارد؟ 🟢 داده واقعی است، 🟡 فرضیه است، یا 🔴 فقط یک ایده برای تست است.</p>
-      </div>
-      <div class="std-card">
-        <div class="std-num">۴</div>
-        <h4>تحلیل ریسک</h4>
-        <p>قبل از اجرا، سیستم نقاط ضعف را پیدا می‌کند (Pre-mortem) و می‌گوید اگر طرح شکست خورد، پلن B چیست.</p>
-      </div>
-      <div class="std-card">
-        <div class="std-num">۵</div>
+        <div class="std-card">
+            <div class="std-num">۱</div>
+            <h4>پیوست به OKR</h4>
+            <p>این اقدام در خدمت کدام OKR است؟</p>
+        </div>
 
-    <!-- NEW: OKR FALLBACK -->
-    <div class="okr-fallback">
-      <h4>اما اگر سازمان OKR تعریف‌شده نداشته باشد؟</h4>
-      <p>
-        خیلی از سازمان‌ها — به‌ویژه در مراحل اولیه — OKR رسمی ندارند. سیستم با سلسله‌مراتب fallback کار می‌کند:
-        هر لایه‌ای که در دسترس باشد استفاده می‌شود. اگر هیچ‌کدام نبود، اولین کار کمک به تعریف OKR است.
-      </p>
-      <div class="fallback-chain">
-        <div class="fallback-step">
-          <div class="fallback-level">Level 1 · اولویت اول</div>
-          <h5>OKR رسمی</h5>
-          <p>اگر سازمان OKR مصوب این کوارتر را دارد، همه خروجی‌ها به آن متصل می‌شوند.</p>
+        <div class="std-card">
+            <div class="std-num">۲</div>
+            <h4>مهندسی شاخص‌ها</h4>
+            <p>برآورد کمی از CAC، LTV و ROI. پایداری اقتصادی باید مستند باشد — نه تخمین شفاهی.</p>
         </div>
-        <div class="fallback-step">
-          <div class="fallback-level">Level 2 · اگر OKR نبود</div>
-          <h5>Strategic Objectives</h5>
-          <p>اهداف کلی کوارتر یا سال که شاید در Slide deck مدیریت باشند ولی OKR رسمی نیستند.</p>
+
+        <div class="std-card">
+            <div class="std-num">۳</div>
+            <h4>سطح اطمینان</h4>
+            <p>سیستم شفاف می‌گوید: این حرف چقدر سندیت دارد؟ 🟢 داده واقعی است، 🟡 فرضیه است، یا 🔴 فقط یک ایده برای تست است.</p>
         </div>
-        <div class="fallback-step">
-          <div class="fallback-level">Level 3 · اگر هیچ‌کدام نبود</div>
-          <h5>North Star Metric</h5>
-          <p>یک متریک مرکزی که همه تیم سر آن توافق دارند (MRR، Active Users، NPS).</p>
+
+        <div class="std-card">
+            <div class="std-num">۴</div>
+            <h4>تحلیل ریسک</h4>
+            <p>قبل از اجرا، سیستم نقاط ضعف را پیدا می‌کند (Pre-mortem) و می‌گوید اگر طرح شکست خورد، پلن B چیست.</p>
         </div>
-        <div class="fallback-step">
-          <div class="fallback-level">Level 4 · هیچ چیز موجود نیست</div>
-          <h5>اول /strategy-one-page</h5>
-          <p>سیستم از شما می‌خواهد ابتدا اهداف ساده را تعریف کنید. این اسکیل کمک می‌کند یک OKR اولیه بسازید.</p>
+
+        <div class="std-card card-full">
+            <div class="std-num">۵</div>
+            <div class="fallback-header">
+                <span class="badge">🛠 مسئله عملی</span>
+                <h4>اما اگر سازمان OKR تعریف‌شده نداشته باشد؟</h4>
+            </div>
+            <p>خیلی از سازمان‌ها OKR رسمی ندارند. سیستم با سلسله‌مراتب fallback کار می‌کند: هر لایه‌ای که در دسترس باشد استفاده می‌شود.</p>
+            
+            <div class="fallback-chain">
+                <div class="fallback-step">
+                    <span class="level-tag">LEVEL 1</span>
+                    <h5>OKR رسمی</h5>
+                    <p>اگر سازمان OKR مصوب دارد، به آن متصل می‌شویم.</p>
+                </div>
+                <div class="fallback-step">
+                    <span class="level-tag">LEVEL 2</span>
+                    <h5>Strategic Objectives</h5>
+                    <p>اهداف کلی که شاید در اسلایدها باشند.</p>
+                </div>
+                <div class="fallback-step">
+                    <span class="level-tag">LEVEL 3</span>
+                    <h5>North Star Metric</h5>
+                    <p>یک متریک مرکزی که تیم روی آن توافق دارد (MRR).</p>
+                </div>
+                <div class="fallback-step">
+                    <span class="level-tag">LEVEL 4</span>
+                    <h5>Strategy One-Page</h5>
+                    <p>ابتدا اهداف ساده را با هم تعریف می‌کنیم.</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</section>
-<!-- ========== QUICK REFERENCE TABLE ========== -->
-<section>
-  <div class="container">
-    <div class="eyebrow">Quick Reference</div>
-    <h2 class="section-title">کدام موقعیت، کدام اسکیل؟</h2>
-    <p class="section-intro">
-      حالا که با اسکیل‌ها آشنا شدید، این جدول پل بین موقعیت واقعی و دستور مناسب است.
-      بدون آن، زمان زیادی صرف انتخاب اسکیل اشتباه می‌شود.
-    </p>
+</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 40%;">موقعیت واقعی</th>
-          <th>اسکیل پیشنهادی</th>
-          <th>یا Chain Command</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>«یک ایده جدید از مدیریت آمد»</td><td><code>/marketing-logic</code></td><td>—</td></tr>
-        <tr><td>«نمی‌دانیم مشتری چه می‌خواهد»</td><td><code>/probe-discovery</code></td><td>—</td></tr>
-        <tr><td>«می‌خواهیم وارد بازار جدید شویم»</td><td><code>/competitive-intel</code> → <code>/probe-discovery</code></td><td><code>/go-to-market</code></td></tr>
-        <tr><td>«قیمت‌گذاری مدل جدید را تعریف کنیم»</td><td><code>/pricing-strategy</code></td><td>—</td></tr>
-        <tr><td>«کمپین لانچ می‌کنیم»</td><td><code>/acquisition-pull</code> + <code>/landing-architect</code></td><td><code>/campaign-launch</code></td></tr>
-        <tr><td>«روایت برند را بازبینی کنیم»</td><td><code>/brand-positioning</code></td><td><code>/brand-sprint</code></td></tr>
-        <tr><td>«رقیب جدیدی وارد شد»</td><td><code>/competitive-intel</code></td><td><code>/brand-sprint</code></td></tr>
-        <tr><td>«Churn بالا رفته»</td><td><code>/retention-audit</code></td><td><code>/retention-check</code></td></tr>
-        <tr><td>«ROI کمپین را بسنجیم»</td><td><code>/data-pinpoint</code></td><td><code>/retention-check</code></td></tr>
-        <tr><td>«بحران در شبکه‌های اجتماعی»</td><td><code>/crisis-management</code></td><td>—</td></tr>
-        <tr><td>«محتوای ارگانیک شروع کنیم»</td><td><code>/organic-growth</code></td><td><code>/brand-sprint</code></td></tr>
-        <tr><td>«جلسه تصمیم مهمی داشتیم»</td><td><code>/decision-logger</code></td><td>خودکار در chains</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
+</body>
+</html>
 <!-- ========== ACT V ========== -->
 <div class="act-marker">
   <div class="container">
