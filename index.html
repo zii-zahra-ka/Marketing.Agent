@@ -1,605 +1,2542 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude برای تیم مارکتینگ</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claude برای تیم مارکتینگ — v4.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════════════════════════
-   DARK MODE DESIGN TOKENS
-══════════════════════════════════════════════════════════ */
-:root {
-  --bg:         #0f172a;
-  --bg-card:    #1e293b;
-  --bg-raised:  #263244;
-  --bg-inset:   #0b1221;
-  --border:     #2d3f56;
-  --border-md:  #3d5068;
+  :root {
+    --bg: #12100d;
+    --bg-card: #1c1915;
+    --ink: #f2ebd8;
+    --ink-soft: #c2baa9;
+    --ink-mute: #7d7669;
+    --line: #2e2a22;
+    --line-soft: #221f18;
+    --accent: #eb8a5c;
+    --accent-soft: #f5a480;
+    --accent-bg: rgba(235, 138, 92, 0.1);
+    --gold: #d4a857;
+    --green: #8bb670;
+    --amber: #e0a54a;
+    --red: #d86a5a;
+    --blue: #6fa0c7;
+    --radius: 4px;
+    --radius-lg: 10px;
+  }
 
-  --tk:         #14b8a6;
-  --tk-dim:     #0f766e;
-  --tk-bright:  #5eead4;
-  --tk-bg:      rgba(20,184,166,0.08);
-  --tk-border:  rgba(20,184,166,0.25);
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  --chain:      #f59e0b;
-  --chain-bg:   rgba(245,158,11,0.08);
-  --chain-border:rgba(245,158,11,0.25);
+  html { scroll-behavior: smooth; }
 
-  --shared:     #94a3b8;
-  --shared-bg:  rgba(148,163,184,0.06);
+  body {
+    font-family: 'Vazirmatn', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01";
+  }
 
-  --green:      #34d399; --green-bg: rgba(52,211,153,0.08); --green-border: rgba(52,211,153,0.25);
-  --red:        #f87171; --red-bg:   rgba(248,113,113,0.08); --red-border:   rgba(248,113,113,0.25);
-  --yellow:     #fbbf24; --yellow-bg:rgba(251,191,36,0.08);  --yellow-border:rgba(251,191,36,0.25);
-  --blue:       #60a5fa; --blue-bg:  rgba(96,165,250,0.08);
+  /* paper texture */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(235,138,92,0.05) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(212,168,87,0.04) 0, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  --text:       #f1f5f9;
-  --text-md:    #cbd5e1;
-  --text-sm:    #94a3b8;
-  --text-xs:    #64748b;
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
 
-  --radius:     8px;
-  --radius-lg:  14px;
-  --font: 'Vazirmatn', sans-serif;
-  --mono: 'Courier New', monospace;
-}
+  /* ===== TOP BAR ===== */
+  .topbar {
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(18, 16, 13, 0.92);
+  }
+  .topbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .brand-mark {
+    width: 22px; height: 22px;
+    background: var(--accent);
+    border-radius: 3px;
+    position: relative;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: var(--bg);
+    border-radius: 1px;
+  }
+  .version-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font);
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--text);
-  background: var(--bg);
-  direction: rtl;
-}
+  /* ===== SECTION BASE ===== */
+  section {
+    padding: 96px 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  section:last-of-type { border-bottom: none; }
 
-/* ── CODE ── */
-code {
-  font-family: var(--mono);
-  font-size: 0.83em;
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
-  padding: 2px 7px;
-  border-radius: 5px;
-  color: var(--tk-bright);
-  direction: ltr;
-  display: inline-block;
-}
-pre {
-  font-family: var(--mono);
-  font-size: 0.82em;
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
-  color: var(--text-md);
-  padding: 20px 24px;
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  direction: ltr;
-  text-align: left;
-  line-height: 1.8;
-}
-pre .key   { color: var(--tk-bright); }
-pre .val   { color: #fbbf24; }
-pre .cmt   { color: var(--text-xs); }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
 
-/* ── LAYOUT ── */
-.container { max-width: 980px; margin: 0 auto; padding: 0 36px; }
-.section { padding: 80px 0; }
-.section-alt { background: var(--bg-inset); }
-.divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
-.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-.mt-8  { margin-top: 8px; }
-.mt-16 { margin-top: 16px; }
-.mt-24 { margin-top: 24px; }
-.mt-32 { margin-top: 32px; }
+  .section-title {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 44px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+  .section-title em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .section-intro {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 720px;
+    line-height: 1.75;
+    margin-bottom: 56px;
+  }
 
-/* ── SECTION LABELS ── */
-.sec-label {
-  font-size: 0.68em; font-weight: 700; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--tk); display: block; margin-bottom: 10px;
-}
-.sec-title {
-  font-size: 1.85em; font-weight: 900; color: var(--text);
-  line-height: 1.25; margin-bottom: 14px;
-}
-.sec-desc {
-  font-size: 0.95em; color: var(--text-md);
-  max-width: 680px; line-height: 1.85; margin-bottom: 44px;
-}
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .hero h1 {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .hero h1 em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .hero-lede {
+    font-size: 20px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 780px;
+    margin-bottom: 64px;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-stat {
+    padding: 32px 24px;
+    border-left: 1px solid var(--line);
+    text-align: right;
+  }
+  .hero-stat:first-child { border-left: none; }
+  .hero-stat-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .hero-stat-label {
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
 
-/* ── HERO ── */
-.hero { padding: 96px 0 72px; position: relative; overflow: hidden; }
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(20,184,166,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(96,165,250,0.05) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-eyebrow {
-  font-size: 0.72em; font-weight: 600; color: var(--text-xs);
-  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
-}
-.hero h1 {
-  font-size: 3em; font-weight: 900; line-height: 1.15;
-  margin-bottom: 22px; color: var(--text);
-}
-.hero h1 em {
-  font-style: normal;
-  background: linear-gradient(135deg, var(--tk-bright), #60a5fa);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero-desc { font-size: 1.05em; color: var(--text-md); max-width: 620px; margin-bottom: 48px; line-height: 1.85; }
-.stats-row { display: flex; gap: 36px; flex-wrap: wrap; }
-.stat .num  { font-size: 2.4em; font-weight: 900; color: var(--tk); line-height: 1; }
-.stat .lbl  { font-size: 0.75em; color: var(--text-sm); margin-top: 5px; }
+  /* ===== ACT MARKER ===== */
+  .act-marker {
+    padding: 60px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-card) 50%, var(--bg) 100%);
+  }
+  .act-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .act-title {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .act-sub {
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
 
-/* ── CHANGE LOG ── */
-.changelog { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 0; }
-.cl-item {
-  display: flex; gap: 10px; align-items: flex-start;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 12px 14px;
-}
-.cl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-.cl-dot.add { background: var(--green); }
-.cl-dot.remove { background: var(--red); }
-.cl-dot.change { background: var(--yellow); }
-.cl-text { font-size: 0.8em; color: var(--text-md); line-height: 1.6; }
-.cl-text strong { color: var(--text); font-weight: 700; }
+  /* ===== PROBLEM CARDS ===== */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .problem {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .problem:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .problem-num {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent-soft);
+    opacity: 0.4;
+    line-height: 1;
+  }
+  .problem-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .problem h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .problem p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.75;
+  }
 
-/* ── PAIN GRID ── */
-.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.pain-card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 24px;
-}
-.pain-tag {
-  font-size: 0.65em; font-weight: 700; color: var(--text-xs);
-  text-transform: uppercase; letter-spacing: 0.1em;
-  margin-bottom: 10px; display: block;
-}
-.pain-card h3 { font-size: 0.95em; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.pain-card p  { font-size: 0.83em; color: var(--text-md); line-height: 1.75; }
+  /* ===== SOLUTION INTRO (TWO COLUMN) ===== */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .compare-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    background: var(--bg-card);
+  }
+  .compare-box.old {
+    background: transparent;
+    border-style: dashed;
+  }
+  .compare-box h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .compare-box.new h4 { color: var(--accent); }
+  .compare-box h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+  .compare-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .compare-box li {
+    padding: 10px 0;
+    padding-right: 24px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14px;
+    color: var(--ink-soft);
+    position: relative;
+  }
+  .compare-box li:last-child { border-bottom: none; }
+  .compare-box li::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 18px;
+    width: 12px; height: 1px;
+    background: var(--ink-mute);
+  }
+  .compare-box.new li::before {
+    background: var(--accent);
+    width: 14px;
+    height: 2px;
+  }
 
-/* ── ARCH LAYERS ── */
-.arch-stack { display: flex; flex-direction: column; }
-.arch-layer {
-  display: flex; align-items: flex-start; gap: 16px;
-  padding: 20px 22px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  position: relative;
-}
-.arch-layer:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-.arch-layer:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
-.arch-layer + .arch-layer { border-top: none; }
-.arch-connector {
-  display: flex; justify-content: flex-start; padding-right: 37px;
-  color: var(--border-md); font-size: 1.1em; line-height: 1;
-  padding-top: 2px; padding-bottom: 2px;
-  border-right: 1px solid var(--border); border-left: none;
-  margin-right: 22px;
-}
-.arch-num {
-  min-width: 28px; height: 28px; border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.7em; font-weight: 800; flex-shrink: 0; margin-top: 2px;
-}
-.arch-body { flex: 1; }
-.arch-title { font-size: 0.88em; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.arch-sub   { font-size: 0.78em; color: var(--text-sm); line-height: 1.65; }
-.arch-badge {
-  font-size: 0.63em; font-weight: 700; padding: 3px 9px;
-  border-radius: 20px; white-space: nowrap; flex-shrink: 0; align-self: flex-start; margin-top: 3px;
-}
-.l1 .arch-num { background: rgba(99,102,241,0.2); color: #a5b4fc; }
-.l1 .arch-badge { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
-.l2 .arch-num { background: var(--tk-bg); color: var(--tk-bright); }
-.l2 .arch-badge { background: var(--tk-bg); color: var(--tk-bright); border: 1px solid var(--tk-border); }
-.l3 .arch-num { background: var(--green-bg); color: var(--green); }
-.l3 .arch-badge { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.l4 .arch-num { background: var(--shared-bg); color: var(--shared); }
-.l4 .arch-badge { background: var(--shared-bg); color: var(--shared); border: 1px solid var(--border); }
+  /* ===== 4 LAYERS ===== */
+  .layers-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 900px;
+  }
+  .layer {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 28px;
+    align-items: start;
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    position: relative;
+  }
+  .layer-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .layer-content h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .layer-content p {
+    font-size: 14px;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .layer-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+  .layer-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+  .layer.highlight {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .layer.highlight .layer-tag {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--bg);
+  }
 
-/* ── CALLOUT ── */
-.callout {
-  border-right: 3px solid var(--tk);
-  background: var(--tk-bg); border-top: 1px solid var(--tk-border);
-  border-bottom: 1px solid var(--tk-border); border-left: 1px solid var(--tk-border);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 14px 18px; font-size: 0.86em; color: var(--text-md); line-height: 1.8;
-}
-.callout strong { color: var(--text); }
-.callout.warn   { border-color: var(--yellow); background: var(--yellow-bg); border-top-color: var(--yellow-border); border-bottom-color: var(--yellow-border); border-left-color: var(--yellow-border); }
-.callout.danger { border-color: var(--red);    background: var(--red-bg);    border-top-color: var(--red-border);    border-bottom-color: var(--red-border);    border-left-color: var(--red-border); }
-.callout.success{ border-color: var(--green);  background: var(--green-bg);  border-top-color: var(--green-border);  border-bottom-color: var(--green-border);  border-left-color: var(--green-border); }
+  .key-note {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border-right: 3px solid var(--accent);
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .key-note strong { color: var(--accent); }
 
-/* ── TAGS ── */
-.skill-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.65em; font-weight: 700; padding: 3px 10px;
-  border-radius: 20px; margin-bottom: 0;
-}
-.tag-mk     { background: var(--tk-bg); color: var(--tk-bright); border: 1px solid var(--tk-border); }
-.tag-chain  { background: var(--chain-bg); color: var(--chain); border: 1px solid var(--chain-border); }
-.tag-shared { background: var(--shared-bg); color: var(--shared); border: 1px solid var(--border); }
-.tag-new    { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.tag-removed{ background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-border); font-size:0.6em; }
+  /* ===== INTERVIEW ENGINE SLIDE ===== */
+  .interview-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: center;
+  }
+  .interview-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .interview-meta > div {
+    padding: 20px;
+    border-left: 1px solid var(--line);
+    text-align: right;
+  }
+  .interview-meta > div:first-child { border-left: none; }
+  .interview-meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+  }
+  .interview-meta-val {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
 
-/* ── SKILL SECTION ── */
-.skill-section { padding: 44px 0 0; }
-.skill-section + .skill-section { border-top: 1px solid var(--border); }
-.skill-meta   { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.skill-title  { font-size: 1.5em; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-.skill-lead   { font-size: 0.92em; color: var(--text-md); line-height: 1.75; margin-bottom: 18px; }
-.skill-body   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.skill-block  {
-  background: var(--bg-inset); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px 20px;
-}
-.skill-block-title {
-  font-size: 0.68em; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text-xs); margin-bottom: 10px;
-}
-.skill-block p  { font-size: 0.86em; color: var(--text-md); line-height: 1.75; }
-.skill-block ul { padding-right: 14px; }
-.skill-block li { font-size: 0.86em; color: var(--text-md); line-height: 1.75; margin-bottom: 3px; }
-.skill-invoke   {
-  margin-top: 12px; padding: 11px 16px;
-  background: var(--bg-inset); border: 1px solid var(--border);
-  border-radius: var(--radius); font-size: 0.8em; color: var(--text-sm);
-}
-.skill-note {
-  margin-top: 10px; padding: 10px 14px;
-  border-right: 2px solid var(--border-md);
-  font-size: 0.8em; color: var(--text-xs); line-height: 1.75;
-}
+  .interview-sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .int-section {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: all 0.25s ease;
+  }
+  .int-section:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .int-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .int-section h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .int-section p {
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+  .int-section.special {
+    background: var(--accent-bg);
+    border-color: var(--accent-soft);
+  }
+  .int-section.special .int-num { color: var(--accent); }
 
-/* ── STEP LIST ── */
-.step-list { display: flex; flex-direction: column; }
-.step-item {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 16px 0; border-bottom: 1px solid var(--border);
-}
-.step-item:last-child { border-bottom: none; }
-.step-num {
-  min-width: 30px; height: 30px; border-radius: 50%;
-  background: var(--tk); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.72em; font-weight: 800; flex-shrink: 0; margin-top: 2px;
-}
-.step-title { font-size: 0.9em; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.step-desc  { font-size: 0.83em; color: var(--text-md); line-height: 1.7; }
+  .interview-flow {
+    margin-top: 40px;
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .interview-flow h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 13px;
+  }
+  .flow-step code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .flow-arrow {
+    color: var(--ink-mute);
+    font-size: 14px;
+  }
 
-/* ── STANDARDS ── */
-.std-row {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 16px 0; border-bottom: 1px solid var(--border);
-}
-.std-row:last-child { border-bottom: none; }
-.std-num {
-  min-width: 34px; height: 34px; border-radius: var(--radius);
-  background: var(--tk-bg); border: 1px solid var(--tk-border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85em; flex-shrink: 0;
-}
-.std-title { font-size: 0.9em; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-.std-desc  { font-size: 0.83em; color: var(--text-md); line-height: 1.7; }
+  /* ===== INTERVIEW DETAIL (v4.1 expanded) ===== */
+  .section-zero {
+    padding: 28px 32px;
+    background: var(--bg-card);
+    border: 2px solid var(--gold);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .section-zero::before {
+    content: "Section 0 · Pre-Interview 🆕";
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: var(--gold);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+  .section-zero h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-zero > p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .zero-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .zero-item {
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .zero-item-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .zero-item p {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
 
-/* ── CONFIDENCE ── */
-.conf-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 13px 18px; border-radius: var(--radius);
-  margin-bottom: 10px; border: 1px solid;
-}
-.conf-row.high { background: var(--green-bg);  border-color: var(--green-border); }
-.conf-row.mid  { background: var(--yellow-bg); border-color: var(--yellow-border); }
-.conf-row.low  { background: var(--red-bg);    border-color: var(--red-border); }
-.conf-icon { font-size: 1.2em; }
-.conf-label { font-weight: 800; font-size: 0.85em; min-width: 64px; }
-.conf-row.high .conf-label { color: var(--green); }
-.conf-row.mid  .conf-label { color: var(--yellow); }
-.conf-row.low  .conf-label { color: var(--red); }
-.conf-desc { font-size: 0.82em; color: var(--text-md); flex: 1; line-height: 1.6; }
+  /* Detailed interview card */
+  .int-detail {
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    transition: all 0.25s ease;
+  }
+  .int-detail:hover {
+    border-color: var(--accent);
+  }
+  .int-detail.flagged {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .int-detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .int-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .int-pill.p-tag {
+    background: var(--accent-bg);
+    border-color: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .int-pill.flagged {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .int-detail h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .int-goal {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+    display: block;
+  }
+  .int-q {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .int-q:first-of-type {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+  .int-q-text {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .int-q-text::before {
+    content: "؟";
+    color: var(--accent);
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .int-opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .int-opt {
+    font-size: 11px;
+    padding: 5px 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .int-opt.open {
+    background: transparent;
+    border-style: dashed;
+    font-style: italic;
+  }
+  .int-opt b {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    margin-left: 4px;
+  }
 
-/* ── WORKFLOW CHAIN ── */
-.wf-chain { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.wf-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 18px; background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-}
-.wf-row:last-child { border-bottom: none; }
-.wf-num {
-  min-width: 26px; height: 26px; background: var(--tk-dim); color: #fff;
-  border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  font-size: 0.68em; font-weight: 800; flex-shrink: 0;
-}
-.wf-skill  { font-family: var(--mono); font-size: 0.78em; font-weight: 700; color: var(--tk-bright); min-width: 200px; direction: ltr; }
-.wf-output { font-size: 0.8em; color: var(--text-sm); flex: 1; }
+  .okr-inline-note {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(235, 138, 92, 0.08);
+    border-right: 2px solid var(--accent);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .okr-inline-note strong { color: var(--accent); }
 
-/* ── CHAIN FLOW ── */
-.chain-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0; }
-.chain-step {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 5px 12px;
-  font-size: 0.76em; font-weight: 600; color: var(--text-md);
-  font-family: var(--mono);
-}
-.chain-arrow { color: var(--text-xs); font-size: 0.9em; }
+  .interview-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
 
-/* ── QUICK REFERENCE TABLE ── */
-.qref-table {
-  width: 100%; border-collapse: collapse;
-  border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
-  font-size: 0.84em;
-}
-.qref-table th {
-  background: var(--bg-raised); padding: 10px 16px;
-  text-align: right; font-weight: 700; font-size: 0.75em;
-  color: var(--text-sm); letter-spacing: 0.05em;
-  border-bottom: 2px solid var(--border-md);
-}
-.qref-table td {
-  padding: 10px 16px; border-bottom: 1px solid var(--border);
-  color: var(--text-md); vertical-align: middle;
-}
-.qref-table tr:last-child td { border-bottom: none; }
-.qref-table tr:hover td { background: var(--bg-raised); }
-.qref-table td:first-child { color: var(--text-sm); font-style: italic; }
-.qref-table td code { font-size: 0.9em; }
+  /* ===== SESSION PROTOCOL ===== */
+  .session-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .session-card {
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .session-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .session-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .session-card p {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
 
-/* ── COLLAB ── */
-.collab-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: start; margin-top: 32px; }
-.collab-zone { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
-.collab-zone-title { font-size: 0.8em; font-weight: 800; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-.mk-zone .collab-zone-title { color: var(--tk-bright); }
-.pm-zone .collab-zone-title { color: var(--blue); }
-.collab-divider {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; padding: 0 12px; gap: 24px;
-  min-height: 200px;
-}
-.collab-point {
-  background: var(--bg-raised); border: 1px solid var(--border-md);
-  border-radius: var(--radius); padding: 8px 12px;
-  font-size: 0.7em; color: var(--text-sm); text-align: center;
-  max-width: 120px; line-height: 1.5;
-}
-.collab-arrow { color: var(--text-xs); font-size: 1.2em; }
-.collab-item  { font-size: 0.78em; color: var(--text-md); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
-.collab-item:last-child { border-bottom: none; }
-.collab-item code { font-size: 0.9em; }
+  /* ===== SKILLS MAP ===== */
+  .skills-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .skills-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .skills-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 48px;
+  }
+  .skill-chip {
+    padding: 14px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+  .skill-chip:hover {
+    border-color: var(--accent);
+    background: var(--bg);
+  }
+  .skill-chip code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+    direction: ltr;
+    text-align: left;
+  }
+  .skill-chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    display: block;
+  }
+  .skill-chip.new::after {
+    content: "🆕";
+    position: absolute;
+    font-size: 10px;
+  }
 
-/* ── SKILLS OVERVIEW GRID ── */
-.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.skill-card-sm {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px;
-  transition: border-color 0.15s;
-}
-.skill-card-sm:hover { border-color: var(--tk-dim); }
-.skill-card-sm .name {
-  font-family: var(--mono); font-size: 0.76em; font-weight: 700;
-  color: var(--tk-bright); display: block; margin-bottom: 5px; direction: ltr;
-}
-.skill-card-sm .desc { font-size: 0.78em; color: var(--text-sm); line-height: 1.5; }
-.skill-card-sm.new-skill  { border-color: var(--green-border); }
-.skill-card-sm.new-skill .name { color: var(--green); }
-.skill-card-sm.shared-sk  { border-color: var(--border); opacity: 0.7; }
-.skill-card-sm.shared-sk .name { color: var(--shared); }
+  /* ===== SKILL DETAIL ===== */
+  .skill-detail {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .skill-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .skill-detail-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    color: var(--accent);
+    direction: ltr;
+    text-align: left;
+    font-weight: 500;
+  }
+  .skill-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink-mute);
+    background: var(--bg);
+  }
+  .skill-tag.new {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .skill-detail p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .skill-inner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+  .skill-inner-box h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+  }
+  .skill-inner-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .skill-inner-box li {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 6px 0;
+    padding-right: 16px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .skill-inner-box li::before {
+    content: "—";
+    position: absolute;
+    right: 0;
+    color: var(--accent);
+  }
+  .skill-call {
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+    color: var(--ink-soft);
+  }
+  .skill-call b { color: var(--accent); }
 
-/* ── AUTHORITY TABLE ── */
-.auth-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.auth-table th { background: var(--bg-raised); padding: 10px 16px; font-size: 0.77em; font-weight: 700; color: var(--text-sm); text-align: right; border-bottom: 2px solid var(--border-md); }
-.auth-table td { padding: 10px 16px; font-size: 0.84em; border-bottom: 1px solid var(--border); color: var(--text-md); }
-.auth-table tr:last-child td { border-bottom: none; }
-.auth-allow { color: var(--green); }
-.auth-deny  { color: var(--red); font-weight: 600; }
+  /* ===== CHAIN COMMANDS ===== */
+  .chain {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+  }
+  .chain.primary {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .chain-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .chain-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--accent);
+    direction: ltr;
+    text-align: left;
+    font-weight: 500;
+  }
+  .chain-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .chain-desc {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+  .chain-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chain-step {
+    flex: 1;
+    min-width: 130px;
+    padding: 14px 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .chain-step-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .chain-step code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    direction: ltr;
+    display: block;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+  .chain-step span {
+    font-size: 11px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    display: block;
+  }
 
-/* ── FORMULA ── */
-.formula {
-  background: var(--tk-bg); border: 1px solid var(--tk-border);
-  border-radius: var(--radius-lg); padding: 20px 24px;
-  font-size: 0.95em; font-weight: 600; color: var(--tk-bright);
-  line-height: 1.8; text-align: center; margin: 16px 0;
-}
+  /* ===== OUTPUT STANDARDS ===== */
+  .std-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .std-card {
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .std-card .std-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .std-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .std-card p {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+  .std-card .badge-new {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
 
-/* ── SUMMARY ── */
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 32px; }
-.summary-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
-.summary-card .num { font-size: 2.4em; font-weight: 900; color: var(--tk); line-height: 1; }
-.summary-card .lbl { font-size: 0.8em; color: var(--text-sm); margin-top: 6px; }
+  /* OKR fallback — NEW */
+  .okr-fallback {
+    padding: 32px;
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    position: relative;
+  }
+  .okr-fallback::before {
+    content: "🆕 مسئله عملی";
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+  .okr-fallback h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .okr-fallback > p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+  .fallback-chain {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .fallback-step {
+    padding: 18px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .fallback-step:first-child { border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
+  .fallback-step:last-child { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; border-color: var(--accent); background: var(--accent-bg); }
+  .fallback-step:not(:first-child) { border-right: none; }
+  .fallback-level {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .fallback-step:last-child .fallback-level { color: var(--accent); }
+  .fallback-step h5 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .fallback-step p {
+    font-size: 11px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
 
-/* ── SHARED SKILL REF ── */
-.shared-ref {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px 18px;
-  display: flex; gap: 14px; align-items: flex-start;
-}
-.shared-icon {
-  width: 36px; height: 36px; flex-shrink: 0;
-  background: var(--bg-raised); border: 1px solid var(--border);
-  border-radius: var(--radius);
-  display: flex; align-items: center; justify-content: center; font-size: 1em;
-}
-.shared-body .sname { font-family: var(--mono); font-size: 0.78em; font-weight: 700; color: var(--shared); direction: ltr; display: block; }
-.shared-body .sdesc { font-size: 0.8em; color: var(--text-sm); margin-top: 5px; line-height: 1.6; }
+  /* ===== TABLE ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  th, td {
+    padding: 14px 18px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  th {
+    background: var(--bg);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(235, 138, 92, 0.05); }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    direction: ltr;
+    display: inline-block;
+  }
 
-/* ── FOOTER ── */
-footer { background: var(--bg-inset); border-top: 1px solid var(--border); padding: 44px 0; }
-.footer-inner { max-width: 980px; margin: 0 auto; padding: 0 36px; display: flex; justify-content: space-between; align-items: center; }
-.footer-brand { font-size: 0.85em; font-weight: 700; color: var(--text); }
-.footer-sub   { font-size: 0.72em; color: var(--text-xs); margin-top: 5px; }
-.footer-links { display: flex; gap: 20px; }
-.footer-links a { font-size: 0.78em; color: var(--text-xs); text-decoration: none; transition: color 0.15s; }
-.footer-links a:hover { color: var(--text-sm); }
+  /* ===== AUTHORITY / RED LINES ===== */
+  .authority-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .auth-header {
+    padding: 14px 18px;
+    background: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line);
+  }
+  .auth-cell {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .auth-cell.area { font-weight: 700; border-left: 1px solid var(--line); }
+  .auth-cell.allow { color: var(--green); border-left: 1px solid var(--line); }
+  .auth-cell.deny { color: var(--red); }
+  .authority-grid > :nth-last-child(-n+3) .auth-cell { border-bottom: none; }
 
-/* ── BADGE INLINE ── */
-.bi { display: inline-block; font-size: 0.63em; font-weight: 700; padding: 2px 7px; border-radius: 12px; vertical-align: middle; margin-right: 5px; }
-.bi.new  { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  /* ===== CROSS FUNCTIONAL ===== */
+  .xfunc {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .xfunc-col {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .xfunc-col.marketing { border-top: 3px solid var(--accent); }
+  .xfunc-col.product { border-top: 3px solid var(--blue); }
+  .xfunc-col h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--ink-mute);
+  }
+  .xfunc-col ul {
+    list-style: none;
+    padding: 0;
+  }
+  .xfunc-col li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .xfunc-col li:last-child { border-bottom: none; }
+  .xfunc-col li code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    direction: ltr;
+    display: inline-block;
+    margin-left: 8px;
+  }
+  .xfunc-col.product li code { color: var(--blue); }
+  .xfunc-bridge {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding-top: 60px;
+  }
+  .bridge-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .bridge-arrow {
+    color: var(--accent);
+    font-size: 18px;
+  }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 740px) {
-  .pain-grid, .skill-body, .two-col, .three-col, .skills-grid, .summary-grid, .collab-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 2em; }
-  .collab-divider { flex-direction: row; min-height: auto; padding: 16px 0; }
-}
+  .shared-skills {
+    margin-top: 40px;
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .shared-skills h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .shared-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .shared-chip {
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .shared-chip code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    direction: ltr;
+    display: block;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+  .shared-chip span {
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+
+  .rule-banner {
+    margin-top: 28px;
+    padding: 20px 24px;
+    background: var(--accent-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--accent-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .rule-banner strong { color: var(--accent); }
+
+  /* ===== 11P FRAMEWORK ===== */
+  .p11-intro {
+    padding: 28px;
+    background: var(--bg-card);
+    border-right: 3px solid var(--gold);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* ===== SUMMARY ===== */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+  .summary-item {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .summary-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+  .summary-item h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .summary-item p {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.65;
+  }
+
+  .final-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--accent-bg);
+  }
+  .final-stat {
+    padding: 32px 20px;
+    border-left: 1px solid rgba(235, 138, 92, 0.2);
+    text-align: center;
+  }
+  .final-stat:first-child { border-left: none; }
+  .final-stat-num {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .final-stat-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  footer a {
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--ink-mute);
+    padding-bottom: 2px;
+  }
+  footer a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .two-col, .interview-hero { grid-template-columns: 1fr; }
+    .problem-grid, .std-grid, .summary-grid { grid-template-columns: 1fr; }
+    .session-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats, .final-stats { grid-template-columns: repeat(2, 1fr); }
+    .hero-stat, .final-stat { border-left: none; border-bottom: 1px solid var(--line); }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .interview-sections { grid-template-columns: repeat(2, 1fr); }
+    .fallback-chain { grid-template-columns: 1fr; }
+    .xfunc { grid-template-columns: 1fr; }
+    .xfunc-bridge { flex-direction: row; padding-top: 0; }
+    .skill-inner-grid { grid-template-columns: 1fr; }
+    .authority-grid { grid-template-columns: 1fr; }
+    .interview-detail-grid { grid-template-columns: 1fr; }
+    .zero-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-title { font-size: 32px; }
+    .hero h1 { font-size: 42px; }
+    section { padding: 64px 0; }
+    .container { padding: 0 20px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════ HERO ══ -->
-<div class="hero">
+<!-- ========== TOP BAR ========== -->
+<div class="topbar">
+  <div class="container topbar-row">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span>Marketing Agent</span>
+    </div>
+    <div class="version-tag">v4.1 · Interview Detail · 2026</div>
+  </div>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
   <div class="container">
-    <div class="hero-eyebrow">Product Team · Claude Skills · 2026</div>
-    <h1>Claude برای<br><em>تیم مارکتینگ</em></h1>
-    <p class="hero-desc">
-      یک سیستم اسکیل ساختاریافته که Claude را به یک شریک مارکتینگ آگاه از کانتکست تبدیل می‌کند —
-      با چارچوب‌های علمی، اقتصاد مارکتینگ قابل سنجش، و حافظه سازمانی که هیچ تصمیمی را گم نمی‌کند.
+    <div class="hero-top">
+      <span>Product Team · Claude Skills</span>
+      <span>CMO-facing Presentation</span>
+    </div>
+    <h1>Claude برای <em>تیم مارکتینگ</em></h1>
+    <p class="hero-lede">
+      سیستمی که Claude را از یک مدل عمومی به شریک مارکتینگ سازمان شما تبدیل می‌کند —
+      با چارچوب‌های علمی، اقتصاد قابل سنجش، و حافظه‌ای که هیچ تصمیمی را گم نمی‌کند.
     </p>
-    <div class="stats-row">
-      <div class="stat"><div class="num">15</div><div class="lbl">اسکیل مارکتینگ</div></div>
-      <div class="stat"><div class="num">6</div><div class="lbl">اسکیل اشتراکی با پروداکت</div></div>
-      <div class="stat"><div class="num">4</div><div class="lbl">Chain Command</div></div>
-      <div class="stat"><div class="num">4</div><div class="lbl">لایه کانتکست</div></div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">15</div>
+        <div class="hero-stat-label">اسکیل اختصاصی مارکتینگ</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">6</div>
+        <div class="hero-stat-label">اسکیل اشتراکی با پروداکت</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4</div>
+        <div class="hero-stat-label">Chain Command</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4</div>
+        <div class="hero-stat-label">لایه کانتکست</div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ========== ACT I ========== -->
+<div class="act-marker">
+  <div class="container">
+    <div class="act-num">Act I</div>
+    <div class="act-title">چرا این سیستم لازم است؟</div>
+    <div class="act-sub">The Problem</div>
   </div>
 </div>
 
-
-
-<!-- ══════════════════════════════════════════ CONTEXT ══ -->
-<div class="section">
+<!-- ========== PROBLEMS ========== -->
+<section>
   <div class="container">
-    <span class="sec-label">Context</span>
-    <h2 class="sec-title">چه مشکلاتی را حل می‌کند</h2>
-    <p class="sec-desc">بدون این سیستم، مارکتینگ با یک مدل زبانی generic کار می‌کند که نه محصول، نه برند، نه تاریخچه تصمیمات شما را می‌شناسد.</p>
+    <div class="eyebrow">Context</div>
+    <h2 class="section-title">چهار مشکلی که <em>هر تیم مارکتینگی</em> با آن‌ها دست‌وپنجه نرم می‌کند</h2>
+    <p class="section-intro">
+      وقتی Claude نه محصول، نه برند، نه تاریخچه تیم شما را می‌شناسد،
+      چهار مشکل تکرارشونده شکل می‌گیرد که روزانه بهره‌وری و کیفیت را تحلیل می‌برد.
+    </p>
 
-    <div class="pain-grid">
-      <div class="pain-card">
-        <span class="pain-tag">نقطه درد ۱</span>
+    <div class="problem-grid">
+      <div class="problem">
+        <div class="problem-num">۰۱</div>
+        <div class="problem-label">Pain Point 01</div>
         <h3>تصمیمات مارکتینگ گم می‌شوند</h3>
-        <p>چرا این کانال را رها کردیم؟ چرا آن سگمنت را انتخاب کردیم؟ بدون حافظه سازمانی، دلایل تصمیمات در Slack گم می‌شوند و شش ماه بعد تیم همان اشتباه را تکرار می‌کند.</p>
+        <p>چرا این کانال را رها کردیم؟ بدون حافظه سازمانی، دلایل تصمیمات در Slack گم می‌شوند. شش ماه بعد، تیم همان اشتباه را تکرار می‌کند.</p>
       </div>
-      <div class="pain-card">
-        <span class="pain-tag">نقطه درد ۲</span>
+
+      <div class="problem">
+        <div class="problem-num">۰۲</div>
+        <div class="problem-label">Pain Point 02</div>
         <h3>کمپین‌ها بدون اقتصاد اجرا می‌شوند</h3>
-        <p>بدون CAC/LTV از ابتدا، اثربخشی کمپین قابل سنجش نیست. پیشنهادها بر اساس feeling پیش می‌روند. وقتی CFO می‌پرسد ROI چقدر بود، جواب نداریم.</p>
+        <p>بدون CAC و LTV از روز اول، اثربخشی کمپین قابل سنجش نیست. پیشنهادها حسی پیش می‌روند و وقتی CFO ROI را می‌پرسد، جواب روشنی نداریم.</p>
       </div>
-      <div class="pain-card">
-        <span class="pain-tag">نقطه درد ۳</span>
+
+      <div class="problem">
+        <div class="problem-num">۰۳</div>
+        <div class="problem-label">Pain Point 03</div>
         <h3>وعده‌های مارکتینگ از محصول جلو می‌زنند</h3>
-        <p>تیم مارکتینگ قابلیتی را وعده می‌دهد که هنوز در Roadmap نیست. هماهنگی با PM اتفاق نمی‌افتد تا لحظه‌ای که کاربر شکایت می‌کند.</p>
+        <p>مارکتینگ قابلیتی را وعده می‌دهد که هنوز در Roadmap نیست. هماهنگی با PM تا لحظه شکایت کاربر اتفاق نمی‌افتد.</p>
       </div>
-      <div class="pain-card">
-        <span class="pain-tag">نقطه درد ۴</span>
+
+      <div class="problem">
+        <div class="problem-num">۰۴</div>
+        <div class="problem-label">Pain Point 04</div>
         <h3>هر session از صفر شروع می‌شود</h3>
-        <p>Claude برند شما را نمی‌شناسد. روایت مرکزی را نمی‌داند. رقبا را نمی‌شناسد. هر بار باید همه چیز را توضیح دهید — وقت و کیفیت هر دو از دست می‌روند.</p>
+        <p>هر بار باید برند، روایت و رقبا را از اول توضیح دهید. بخش بزرگی از وقت و کیفیت صرف setup می‌شود، نه کار واقعی.</p>
       </div>
     </div>
   </div>
+</section>
+
+<!-- ========== ACT II ========== -->
+<div class="act-marker">
+  <div class="container">
+    <div class="act-num">Act II</div>
+    <div class="act-title">سیستم، نه یک prompt</div>
+    <div class="act-sub">The Architecture</div>
+  </div>
 </div>
 
-<!-- ══════════════════════════════════════════ ARCHITECTURE ══ -->
-<div class="section section-alt">
+<!-- ========== SOLUTION INTRO ========== -->
+<section>
   <div class="container">
-    <span class="sec-label">Design Principle</span>
-    <h2 class="sec-title">۴ لایه کانتکست</h2>
-    <p class="sec-desc">همان مدل ۴ لایه که برای PM و Designer پیاده شده — Policy ثابت است، Dynamic منحصر به فرد هر مارکتر.</p>
+    <div class="eyebrow">Design Philosophy</div>
+    <h2 class="section-title">تفاوت بین <em>prompt</em> و <em>سیستم</em></h2>
+    <p class="section-intro">
+      prompt یک دستور یک‌باره است. سیستم workflow ساختاری مداوم — هر session را با context کامل آغاز می‌کند،
+      فرمت خروجی را الزامی می‌کند، و حافظه تصمیمات را حفظ می‌کند.
+    </p>
 
     <div class="two-col">
-      <div class="arch-stack">
-        <div class="arch-layer l1">
-          <div class="arch-num">۱</div>
-          <div class="arch-body">
-            <div class="arch-title">لایه Policy — ثابت برای همه</div>
-            <div class="arch-sub">اسکیل‌ها، دستورها، قوانین اجرایی، فرمت خروجی. توسط CMO تعریف می‌شود. git pull برای آپدیت.</div>
-          </div>
-          <div class="arch-badge">یکسان برای همه</div>
+      <div class="compare-box old">
+        <h4>روش فعلی — Claude Generic</h4>
+        <h3>هر session از صفر</h3>
+        <ul>
+          <li>هر بار باید محصول را توضیح دهید</li>
+          <li>روایت برند را از اول تعریف می‌کنید</li>
+          <li>استاندارد مشخصی برای خروجی نیست</li>
+          <li>تصمیمات قبلی فراموش شده‌اند</li>
+          <li>هر مارکتر جواب متفاوتی می‌گیرد</li>
+          <li>هماهنگی با پروداکت دستی است</li>
+        </ul>
+      </div>
+
+      <div class="compare-box new">
+        <h4>راه جدید — Marketing Agent</h4>
+        <h3>شریک context-aware</h3>
+        <ul>
+          <li>محصول، برند و OKR از قبل لود شده</li>
+          <li>هر خروجی با ساختار شش‌گانه استاندارد</li>
+          <li>هر تصمیم در <code>decision-log.md</code> ثبت می‌شود</li>
+          <li>همه مارکترها با استاندارد یکسان</li>
+          <li>Guardrails هماهنگ با Roadmap پروداکت</li>
+          <li>Chain commands برای workflow‌های تکراری</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4 LAYERS ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Architecture · Four Layers</div>
+    <h2 class="section-title">۴ لایه کانتکست</h2>
+    <p class="section-intro">
+      همان مدل ۴ لایه‌ای که برای PM و Designer پیاده شده است. Policy ثابت و زیر دست CMO؛
+      Dynamic منحصر به هر مارکتر و مستقل از آپدیت‌های Policy.
+    </p>
+
+    <div class="layers-stack">
+      <div class="layer">
+        <div class="layer-num">۱</div>
+        <div class="layer-content">
+          <h4>لایه Policy — ثابت برای همه</h4>
+          <p>اسکیل‌ها، دستورها، قوانین اجرایی، فرمت خروجی، خطوط قرمز. توسط CMO تعریف می‌شود. <code>git pull</code> برای آپدیت.</p>
         </div>
-        <div class="arch-connector">↕</div>
-        <div class="arch-layer l2">
-          <div class="arch-num">۲</div>
-          <div class="arch-body">
-            <div class="arch-title">موتور مصاحبه — یک‌بار اجرا</div>
-            <div class="arch-sub">مصاحبه ساختاریافته ۱۲ بخشی. خروجی: <code>principles.md</code> + تمام فایل‌های context اسکیل‌ها.</div>
-          </div>
-          <div class="arch-badge">یک‌بار اجرا</div>
+        <div class="layer-tag">یکسان برای همه</div>
+      </div>
+
+      <div class="layer highlight">
+        <div class="layer-num">۲</div>
+        <div class="layer-content">
+          <h4>موتور مصاحبه — یک‌بار اجرا 🆕</h4>
+          <p>مصاحبه ساختاریافته ۱۲ بخشی. خروجی: <code>principles.md</code> + فایل‌های context اسکیل‌ها. <strong>در اسلاید بعد جزئیات کامل.</strong></p>
         </div>
-        <div class="arch-connector">↕</div>
-        <div class="arch-layer l3">
-          <div class="arch-num">۳</div>
-          <div class="arch-body">
-            <div class="arch-title">لایه Dynamic — خاص هر پروژه</div>
-            <div class="arch-sub"><code>principles.md</code> · <code>decision-log.md</code> · روایت برند · OKR جاری · تاریخچه کمپین‌ها.</div>
-          </div>
-          <div class="arch-badge">منحصر به فرد</div>
+        <div class="layer-tag">یک‌بار اجرا</div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">۳</div>
+        <div class="layer-content">
+          <h4>لایه Dynamic — خاص هر پروژه</h4>
+          <p><code>principles.md</code> · <code>decision-log.md</code> · روایت برند · OKR جاری · تاریخچه کمپین‌ها.</p>
         </div>
-        <div class="arch-connector">↕</div>
-        <div class="arch-layer l4">
-          <div class="arch-num">۴</div>
-          <div class="arch-body">
-            <div class="arch-title">لایه Personal — خصوصی</div>
-            <div class="arch-sub">یادداشت‌های شخصی، ترجیحات فردی. gitignored. هیچ‌وقت commit نمی‌شود.</div>
+        <div class="layer-tag">منحصر به فرد</div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-num">۴</div>
+        <div class="layer-content">
+          <h4>لایه Personal — خصوصی</h4>
+          <p>یادداشت‌های شخصی، ترجیحات فردی. <code>gitignored</code>. هیچ‌وقت commit نمی‌شود.</p>
+        </div>
+        <div class="layer-tag">خصوصی</div>
+      </div>
+    </div>
+
+    <div class="key-note">
+      <strong>اصل کلیدی:</strong> وقتی CMO یک اسکیل را آپدیت می‌کند، فقط لایه Policy تغییر می‌کند.
+      <code>principles.md</code> و <code>decision-log.md</code> هر مارکتر دست‌نخورده باقی می‌ماند.
+    </div>
+  </div>
+</section>
+
+<!-- ========== INTERVIEW ENGINE — OVERVIEW ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Layer 2 · Interview Engine 🆕</div>
+    <h2 class="section-title">موتور مصاحبه — <em>یک‌بار می‌سازی، همیشه لود می‌شود</em></h2>
+    <p class="section-intro">
+      مسئله چهارم اینجا حل می‌شود. یک مصاحبه نگاشته به فریم‌ورک ۱۱P —
+      یک‌بار اجرا، پروفایل کامل سازمان را می‌سازد، و در هر session بعدی خودکار لود می‌شود.
+    </p>
+
+    <div class="interview-meta">
+      <div>
+        <div class="interview-meta-label">Duration</div>
+        <div class="interview-meta-val">۲۵–۳۵ دقیقه</div>
+      </div>
+      <div>
+        <div class="interview-meta-label">Output</div>
+        <div class="interview-meta-val">principles.md</div>
+      </div>
+      <div>
+        <div class="interview-meta-label">Frequency</div>
+        <div class="interview-meta-val">یک‌بار + re-run سالانه</div>
+      </div>
+    </div>
+
+    <!-- Section 0 — Pre-Interview Context -->
+    <div class="section-zero" style="margin-top: 48px;">
+      <h4>Pre-Interview Context — چهار سوال پایه قبل از شروع</h4>
+      <p>
+        قبل از ورود به ۱۲ بخش P-framework، چهار سوال پایه موقعیت سازمان را روشن می‌کند —
+        context این پاسخ‌ها در تمام بخش‌های بعدی استفاده می‌شود.
+      </p>
+      <div class="zero-grid">
+        <div class="zero-item">
+          <div class="zero-item-label">Q1 · Organization</div>
+          <p>نام شرکت، اندازه تیم مارکتینگ، مرحله رشد (Pre-PMF / Growth / Scale)</p>
+        </div>
+        <div class="zero-item">
+          <div class="zero-item-label">Q2 · Product</div>
+          <p>چه می‌فروشید، مدل کسب‌وکار (B2B / B2C / B2B2C)، دسته‌بندی بازار</p>
+        </div>
+        <div class="zero-item">
+          <div class="zero-item-label">Q3 · Purpose</div>
+          <p>چرا از این agent استفاده می‌کنید؟ هدف اصلی (لانچ، رشد، بازبینی، بحران)</p>
+        </div>
+        <div class="zero-item">
+          <div class="zero-item-label">Q4 · Constraints</div>
+          <p>محدودیت بودجه، زمان، منابع انسانی — context کلی که در همه تصمیمات لحاظ می‌شود</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="interview-flow">
+      <h4>از مصاحبه تا session آماده</h4>
+      <div class="flow-steps">
+        <div class="flow-step">Pre-Interview Context</div>
+        <span class="flow-arrow">←</span>
+        <div class="flow-step">۱۲ بخش P-framework</div>
+        <span class="flow-arrow">←</span>
+        <div class="flow-step"><code>principles.md</code></div>
+        <span class="flow-arrow">←</span>
+        <div class="flow-step">context اسکیل‌ها</div>
+        <span class="flow-arrow">←</span>
+        <div class="flow-step">هر session خودکار لود</div>
+      </div>
+    </div>
+
+    <div class="key-note">
+      <strong>Re-run کی لازم است؟</strong> تغییر Positioning، ورود به بازار جدید، تغییر مدل قیمت‌گذاری، یا هر ۶ ماه یک‌بار به عنوان checkpoint.
+      Re-run به صورت incremental است — فقط بخش‌هایی که تغییر کرده‌اند دوباره پرسیده می‌شوند.
+    </div>
+  </div>
+</section>
+
+<!-- ========== INTERVIEW — 12 SECTIONS DETAIL ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Interview Engine · 12 Sections</div>
+    <h2 class="section-title">۱۲ بخش مصاحبه — <em>نگاشته به فریم‌ورک ۱۱P</em></h2>
+    <p class="section-intro">
+      هر بخش به یک P از فریم‌ورک مارکتینگ متصل است. سوالات ترکیبی از چندگزینه‌ای ساختاریافته و پاسخ‌های باز —
+      طوری که مسئول مارکتینگ بتواند سریع جواب دهد.
+    </p>
+
+    <div class="interview-detail-grid">
+
+      <!-- SECTION 1 — Principles -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P1 · Principles</span>
+          <span class="int-pill">۰۱ · ۳ سوال</span>
+        </div>
+        <h4>اصول و منطق مارکتینگ</h4>
+        <span class="int-goal">هدف: تعریف DNA مارکتینگی سازمان</span>
+        <div class="int-q">
+          <div class="int-q-text">رویکرد غالب مارکتینگ در بیزنس شما چیست</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> سنتی — ۴P و ارتباطات یک‌طرفه</span>
+            <span class="int-opt"><b>ب</b> مدرن — داده‌محور و Experimentation</span>
+            <span class="int-opt"><b>ج</b> ترکیبی — هویت کلاسیک + رشد مدرن</span>
           </div>
-          <div class="arch-badge">خصوصی</div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">نقش اصلی مارکتینگ در ساختار فعلی</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> مرکز هزینه — تولید لید</span>
+            <span class="int-opt"><b>ب</b> Growth Engine — درآمدزایی مستقیم</span>
+            <span class="int-opt"><b>ج</b> Brand Builder — آگاهی و تمایز</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">کدام مدل‌های ذهنی اولویت کلاود باشد (چندگزینه‌ای)</div>
+          <div class="int-opts">
+            <span class="int-opt">STP</span>
+            <span class="int-opt">Jobs-to-be-Done</span>
+            <span class="int-opt">7 Powers</span>
+            <span class="int-opt">AARRR</span>
+          </div>
         </div>
       </div>
 
-      <div>
-        <div class="callout success">
-          <strong>اصل کلیدی:</strong> وقتی CMO یک اسکیل را آپدیت می‌کند، فقط لایه Policy تغییر می‌کند. <code>principles.md</code> و <code>decision-log.md</code> هر مارکتر دست‌نخورده می‌ماند.
+      <!-- SECTION 2 — Probe -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P2 · Probe</span>
+          <span class="int-pill">۰۲ · ۲ سوال</span>
         </div>
+        <h4>اکتشاف بازار</h4>
+        <span class="int-goal">هدف: شناسایی نیازها و بخش‌بندی بازار</span>
+        <div class="int-q">
+          <div class="int-q-text">اولویت شما در شناسایی مشتری چیست</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Customer Discovery — پیدا کردن Pain</span>
+            <span class="int-opt"><b>ب</b> Segmentation — بخش‌بندی رفتاری</span>
+            <span class="int-opt"><b>ج</b> Prototyping — Soft Launch و تست</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">ارزش پیشنهادی شما بیشتر بر چه محوری است</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Functional — حل مشکل فنی</span>
+            <span class="int-opt"><b>ب</b> Emotional — حس بهتر/تعلق</span>
+            <span class="int-opt"><b>ج</b> Economic — صرفه‌جویی یا درآمد</span>
+          </div>
+        </div>
+      </div>
 
-        <div class="mt-24">
-          <div class="std-row">
-            <div class="std-num">📋</div>
-            <div class="std-body">
-              <div class="std-title">CMO مالک Policy است</div>
-              <div class="std-desc">قوانین، اسکیل‌ها، فرمت خروجی، سطوح اختیار، خطوط قرمز — یکبار تعریف، همه پیروی می‌کنند</div>
-            </div>
+      <!-- SECTION 3 — Plan (FLAGGED for OKR) -->
+      <div class="int-detail flagged">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P3 · Plan</span>
+          <span class="int-pill flagged">🆕 OKR check</span>
+        </div>
+        <h4>استراتژی مارکتینگ</h4>
+        <span class="int-goal">هدف: تدوین اهداف و نقشه راه</span>
+        <div class="int-q">
+          <div class="int-q-text">شاخص کلیدی مورد نظر شما برای دوره جاری</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Strategic OKRs — اهداف بلندمدت</span>
+            <span class="int-opt"><b>ب</b> Market Share — رقابت مستقیم</span>
+            <span class="int-opt"><b>ج</b> Budget Efficiency — بهینه‌سازی هزینه</span>
           </div>
-          <div class="std-row">
-            <div class="std-num">✍️</div>
-            <div class="std-body">
-              <div class="std-title">مارکتر مالک Dynamic است</div>
-              <div class="std-desc"><code>principles.md</code> · <code>decision-log.md</code> · context اسکیل‌ها · روایت برند فعلی</div>
-            </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">آیا در حال حاضر OKR تعریف‌شده برای این دوره دارید</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> بله، مصوب است</span>
+            <span class="int-opt"><b>ب</b> نه، اهداف کلی داریم ولی OKR رسمی نیست</span>
+            <span class="int-opt"><b>ج</b> نه، می‌خواهیم با کمک ایجنت تعریف کنیم</span>
           </div>
-          <div class="std-row">
-            <div class="std-num">🔒</div>
-            <div class="std-body">
-              <div class="std-title">فایل‌های خصوصی (gitignored)</div>
-              <div class="std-desc">یادداشت‌های شخصی، ترجیحات ارتباطی، کانتکست‌های محرمانه</div>
-            </div>
+          <div class="okr-inline-note">
+            <strong>Fallback:</strong> اگر «ب» یا «ج» انتخاب شود، اسکیل <code>/strategy-one-page</code>
+            از North Star Metric یا اهداف سه‌ماهه شروع می‌کند و یک OKR اولیه می‌سازد.
           </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4 — Pull -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P4 · Pull</span>
+          <span class="int-pill">۰۴ · ۱ سوال</span>
+        </div>
+        <h4>جذب و فعال‌سازی</h4>
+        <span class="int-goal">هدف: تسلط بر کانال‌ها و تریگرها</span>
+        <div class="int-q">
+          <div class="int-q-text">تمرکز اصلی شما در جذب کاربر روی کدام دسته است</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Channel Mastery — کانال‌های پولی</span>
+            <span class="int-opt"><b>ب</b> Conversion (CRO) — بهینه‌سازی تبدیل</span>
+            <span class="int-opt"><b>ج</b> Activation — تریگر‌های ورود کاربر</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 — Preserve -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P5 · Preserve</span>
+          <span class="int-pill">۰۵ · ۱ سوال</span>
+        </div>
+        <h4>ماندگاری و تعامل</h4>
+        <span class="int-goal">هدف: تحلیل کوهورت و حفظ مشتری</span>
+        <div class="int-q">
+          <div class="int-q-text">استراتژی اصلی شما برای جلوگیری از ریزش مشتری</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Cohort Analysis — شناسایی نقاط ریزش</span>
+            <span class="int-opt"><b>ب</b> Engagement — برنامه‌های وفاداری</span>
+            <span class="int-opt"><b>ج</b> Reactivation — بازگشت Resurrection</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 6 — Propel -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P6 · Propel</span>
+          <span class="int-pill">۰۶ · ۱ سوال</span>
+        </div>
+        <h4>موتور رشد</h4>
+        <span class="int-goal">هدف: مدل‌سازی و مقیاس‌پذیری</span>
+        <div class="int-q">
+          <div class="int-q-text">محرک اصلی موتور رشد شما کدام است</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Growth Modeling — مدل‌های ریاضی</span>
+            <span class="int-opt"><b>ب</b> Acquisition Loops — Viral Loops</span>
+            <span class="int-opt"><b>ج</b> Experimentation — آزمایش داده‌محور</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 7 — Position -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P7 · Position</span>
+          <span class="int-pill">۰۷ · ۱ سوال</span>
+        </div>
+        <h4>برندینگ و جایگاه‌یابی</h4>
+        <span class="int-goal">هدف: تمایز و روایت برند</span>
+        <div class="int-q">
+          <div class="int-q-text">هسته اصلی تمایز شما در بازار چیست</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Narrative — داستان‌سرایی برند</span>
+            <span class="int-opt"><b>ب</b> Competitive — تمایز در ویژگی</span>
+            <span class="int-opt"><b>ج</b> Partnerships — همکاری‌های استراتژیک</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 8 — Platform -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P8 · Platform</span>
+          <span class="int-pill">۰۸ · ۱ سوال</span>
+        </div>
+        <h4>تکنولوژی و اتوماسیون</h4>
+        <span class="int-goal">هدف: مدیریت ابزارها و جریان داده</span>
+        <div class="int-q">
+          <div class="int-q-text">زیرساخت MarTech شما در چه وضعیتی است</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Automation — ابزارهای CRM و اتوماسیون</span>
+            <span class="int-opt"><b>ب</b> Integration — یکپارچگی جریان داده</span>
+            <span class="int-opt"><b>ج</b> Tool Selection — در مرحله انتخاب</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 9 — Predict -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P9 · Predict</span>
+          <span class="int-pill">۰۹ · ۱ سوال</span>
+        </div>
+        <h4>هوش مصنوعی و پیش‌بینی</h4>
+        <span class="int-goal">هدف: استفاده از AI در مارکتینگ</span>
+        <div class="int-q">
+          <div class="int-q-text">اولویت استفاده از هوش مصنوعی در تیم شما</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Predictive Analytics — پیش‌بینی رفتار</span>
+            <span class="int-opt"><b>ب</b> Personalization — شخصی‌سازی تجربه</span>
+            <span class="int-opt"><b>ج</b> Generative AI — تولید محتوا</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 10 — Pinpoint (CLEANED UP) -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P10 · Pinpoint</span>
+          <span class="int-pill">۱۰ · ۳ سوال 🆕</span>
+        </div>
+        <h4>داده و تحلیل</h4>
+        <span class="int-goal">هدف: تصمیم‌گیری داده‌محور</span>
+        <div class="int-q">
+          <div class="int-q-text">چالش اصلی شما در مدیریت داده‌ها</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Data Collection — جمع‌آوری داده خام</span>
+            <span class="int-opt"><b>ب</b> Attribution — نسبت دادن فروش به کانال</span>
+            <span class="int-opt"><b>ج</b> Visualization — گزارش‌های بصری BI</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">چارچوب ارزیابی مشتری شما چیست</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> از BANT استفاده می‌کنیم</span>
+            <span class="int-opt"><b>ب</b> چارچوب دیگری داریم</span>
+            <span class="int-opt"><b>ج</b> می‌خواهیم ایجنت چارچوب پیاده کند</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">داده‌های لازم برای تحلیل RFM را در اختیار دارید</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> بله، کامل</span>
+            <span class="int-opt"><b>ب</b> نسبی — فقط بعضی متریک‌ها</span>
+            <span class="int-opt"><b>ج</b> خیر — باید از صفر راه‌اندازی شود</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 11 — People -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">P11 · People</span>
+          <span class="int-pill">۱۱ · ۱ سوال</span>
+        </div>
+        <h4>سازمان و رهبری</h4>
+        <span class="int-goal">هدف: ساختار تیم و همکاری‌ها</span>
+        <div class="int-q">
+          <div class="int-q-text">چالش اصلی مدیریتی شما در حال حاضر</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Cross-Functional — هماهنگی با محصول/فنی</span>
+            <span class="int-opt"><b>ب</b> Agency Management — مدیریت آژانس</span>
+            <span class="int-opt"><b>ج</b> Talent & Culture — جذب و فرهنگ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 12 — Conversion -->
+      <div class="int-detail">
+        <div class="int-detail-head">
+          <span class="int-pill p-tag">Ext · Conversion</span>
+          <span class="int-pill">۱۲ · ۳ سوال</span>
+        </div>
+        <h4>زیرساخت تبدیل</h4>
+        <span class="int-goal">هدف: بهینه‌سازی نقطه تبدیل</span>
+        <div class="int-q">
+          <div class="int-q-text">هدف اصلی لندینگ‌پیج‌های شما چیست</div>
+          <div class="int-opts">
+            <span class="int-opt"><b>الف</b> Lead Gen — دریافت اطلاعات تماس</span>
+            <span class="int-opt"><b>ب</b> Direct Sales — فروش مستقیم</span>
+            <span class="int-opt"><b>ج</b> Education/Demo — آشنایی و رزرو دمو</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">CTA طلایی شما چیست — دقیقاً چه اکشنی می‌خواهید</div>
+          <div class="int-opts">
+            <span class="int-opt open">پاسخ باز — مثال: «رزرو دمو ۱۵ دقیقه‌ای»</span>
+          </div>
+        </div>
+        <div class="int-q">
+          <div class="int-q-text">چه عناصر Social Proof در اختیار دارید</div>
+          <div class="int-opts">
+            <span class="int-opt">رضایت مشتریان</span>
+            <span class="int-opt">لوح‌ها و جوایز</span>
+            <span class="int-opt">اعداد عملکرد</span>
+            <span class="int-opt open">سایر — پاسخ باز</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Coverage summary -->
+    <div class="key-note">
+      <strong>پوشش کامل:</strong> Pre-Interview Context (۴ سوال) + ۱۲ بخش P-framework (۱۸ سوال) = <strong>۲۲ سوال کل</strong>.
+      زمان کل تقریباً ۲۵–۳۵ دقیقه. خروجی ساختاریافته در <code>principles.md</code> با قالب یکسان برای همه مارکترهای تیم.
+    </div>
+  </div>
+</section>
+
+<!-- ========== SESSION PROTOCOL ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Protocol · Session Start</div>
+    <h2 class="section-title">پروتکل آغاز هر session</h2>
+    <p class="section-intro">
+      بعد از مصاحبه اولیه، <code>principles.md</code> در هر session خودکار لود می‌شود. اما ایجنت قبل از هر کار،
+      چهار سوال کوتاه می‌پرسد تا موقعیت session را روشن کند.
+    </p>
+
+    <div class="session-grid">
+      <div class="session-card">
+        <div class="session-num">۰۱</div>
+        <h4>وضعیت پروژه</h4>
+        <p>جدید یا ادامه؟ اگر ادامه است، آخرین تصمیم در <code>decision-log.md</code> چیست؟</p>
+      </div>
+      <div class="session-card">
+        <div class="session-num">۰۲</div>
+        <h4>اسکوپ درخواست</h4>
+        <p>این درخواست در کدام لایه است؟ استراتژی / اجرا / تحلیل / بازبینی</p>
+      </div>
+      <div class="session-card">
+        <div class="session-num">۰۳</div>
+        <h4>محدودیت‌های فعال</h4>
+        <p>محدودیت بودجه، زمان، یا منابع فنی خاصی وجود دارد؟</p>
+      </div>
+      <div class="session-card">
+        <div class="session-num">۰۴</div>
+        <h4>صاحب تصمیم</h4>
+        <p>چه کسی خروجی نهایی را تأیید می‌کند؟ (برای فیلد Sign-off Required)</p>
+      </div>
+    </div>
+
+    <div class="key-note">
+      <strong>اگر پاسخ کافی ندادید:</strong> ایجنت با ذکر صریح فرضیاتی که گرفته پیش می‌رود — بدون توقف کامل.
+      این فرضیات در خروجی نهایی مشخص می‌شوند تا اگر اشتباه بودند، سریع اصلاح شوند.
+    </div>
+  </div>
+</section>
+
+<!-- ========== ACT III ========== -->
+<div class="act-marker">
+  <div class="container">
+    <div class="act-num">Act III</div>
+    <div class="act-title">موتور — اسکیل‌ها و Chains</div>
+    <div class="act-sub">The Engine</div>
+  </div>
+</div>
+
+<!-- ========== SKILLS MAP ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Skills Reference</div>
+    <h2 class="section-title">نقشه کل اسکیل‌ها</h2>
+    <p class="section-intro">
+      هر اسکیل یک workflow متمرکز و context-aware است، نه یک دستور کلی. می‌توان مستقیم فراخوانی کرد
+      یا از طریق chain commands در توالی اجرا کرد. جزئیات هر دسته در اسلایدهای بعدی.
+    </p>
+
+    <div class="skills-header">
+      <h3>اسکیل‌های اختصاصی مارکتینگ</h3>
+      <span class="skills-count">15 SKILLS</span>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-chip"><code>/marketing-logic</code><span>قطب‌نمای علمی</span></div>
+      <div class="skill-chip"><code>/probe-discovery</code><span>مشتری‌پژوهی BANT</span></div>
+      <div class="skill-chip"><code>/strategy-one-page</code><span>GTM Plan</span></div>
+      <div class="skill-chip"><code>/competitive-intel</code><span>🆕 رصد رقبا</span></div>
+      <div class="skill-chip"><code>/pricing-strategy</code><span>🆕 قیمت به‌عنوان lever</span></div>
+      <div class="skill-chip"><code>/acquisition-pull</code><span>کمپین جذب</span></div>
+      <div class="skill-chip"><code>/landing-architect</code><span>FABV + قانون ۵ ثانیه</span></div>
+      <div class="skill-chip"><code>/organic-growth</code><span>SEO و محتوا</span></div>
+      <div class="skill-chip"><code>/growth-engine</code><span>AB Test و Loops</span></div>
+      <div class="skill-chip"><code>/retention-audit</code><span>Cohort Analysis</span></div>
+      <div class="skill-chip"><code>/brand-positioning</code><span>7 Powers</span></div>
+      <div class="skill-chip"><code>/crisis-management</code><span>🆕 پروتکل بحران</span></div>
+      <div class="skill-chip"><code>/martech-platform</code><span>CRM و اتوماسیون</span></div>
+      <div class="skill-chip"><code>/data-pinpoint</code><span>Attribution</span></div>
+      <div class="skill-chip"><code>/decision-logger</code><span>🆕 حافظه سازمانی</span></div>
+    </div>
+
+    <div class="skills-header">
+      <h3>اسکیل‌های اشتراکی با تیم پروداکت</h3>
+      <span class="skills-count">6 SHARED</span>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-chip"><code>/prompt-optimizer</code><span>بهینه‌سازی پرامپت</span></div>
+      <div class="skill-chip"><code>/presentation-style</code><span>HTML slide deck</span></div>
+      <div class="skill-chip"><code>/wireframe-generator</code><span>وایرفریم لندینگ</span></div>
+      <div class="skill-chip"><code>/task-writer</code><span>تسک Linear</span></div>
+      <div class="skill-chip"><code>/meeting-support</code><span>آجندا و action item</span></div>
+      <div class="skill-chip"><code>/design-system-check</code><span>کامپوننت‌های موجود</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 1 ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Category 1 · Foundation & Strategy</div>
+    <h2 class="section-title">دسته ۱ — <em>بنیاد و استراتژی</em></h2>
+    <p class="section-intro">پنج اسکیل که قبل از هر اقدام اجرا می‌شوند — همراستایی با منطق، مشتری، رقبا، و استراتژی.</p>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/marketing-logic</div>
+        <div class="skill-tags"><span class="skill-tag">فاز کشف</span></div>
+      </div>
+      <p>هر ایده خام یا درخواست تیم را با منطق پایه مارکتینگ تطبیق می‌دهد — قبل از اینکه منابع اشتباه خرج شود. مدل ذهنی مناسب (STP، JTBD، یا 7 Powers) را شناسایی و پیشنهاد می‌کند.</p>
+      <div class="skill-call">فراخوانی: <b>/marketing-logic [توصیف ایده یا درخواست]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/probe-discovery</div>
+        <div class="skill-tags"><span class="skill-tag">کشف بازار</span></div>
+      </div>
+      <p>مشتری‌پژوهی دقیق فراتر از حدس — شناسایی Pain، Need و Desire با ارزیابی BANT و Jobs-to-be-Done.</p>
+      <div class="skill-inner-grid">
+        <div class="skill-inner-box">
+          <h5>چه زمانی</h5>
+          <ul>
+            <li>نمی‌دانیم مشتری چه می‌خواهد</li>
+            <li>قبل از طراحی فیچر جدید</li>
+            <li>ورود به سگمنت جدید</li>
+          </ul>
+        </div>
+        <div class="skill-inner-box">
+          <h5>ارزیابی BANT</h5>
+          <ul>
+            <li>Budget — بودجه خرید دارد؟</li>
+            <li>Authority — تصمیم‌گیر است؟</li>
+            <li>Need — نیاز واقعی دارد؟</li>
+            <li>Timing — زمان‌بندی خرید چیست؟</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-call">فراخوانی: <b>/probe-discovery [سگمنت یا بازار هدف]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/competitive-intel</div>
+        <div class="skill-tags">
+          <span class="skill-tag new">🆕 جدید</span>
+          <span class="skill-tag">Input به Brand Positioning</span>
+        </div>
+      </div>
+      <p>رصد سیستماتیک رقبا — input اصلی برای Brand Positioning و Pricing Strategy. بدون این اسکیل، موقعیت‌یابی کور است.</p>
+      <div class="skill-inner-grid">
+        <div class="skill-inner-box">
+          <h5>چه زمانی</h5>
+          <ul>
+            <li>رقیب جدید وارد بازار شد</li>
+            <li>قبل از هر /go-to-market</li>
+            <li>بازبینی Brand Positioning</li>
+          </ul>
+        </div>
+        <div class="skill-inner-box">
+          <h5>خروجی‌ها</h5>
+          <ul>
+            <li>Competitive Matrix</li>
+            <li>Gap Analysis</li>
+            <li>Positioning Map</li>
+            <li>Defensive و offensive moves</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-call">فراخوانی: <b>/competitive-intel [نام رقبا یا حوزه بازار]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/pricing-strategy</div>
+        <div class="skill-tags"><span class="skill-tag new">🆕 جدید</span></div>
+      </div>
+      <p>قیمت‌گذاری به عنوان قدرتمندترین lever مارکتینگ — نه تصمیم مالی صرف، بلکه ابزار موقعیت‌یابی.</p>
+      <div class="skill-inner-box">
+        <h5>مدل‌های پوشش‌داده‌شده</h5>
+        <ul>
+          <li>Value-based Pricing</li>
+          <li>Freemium / Usage-based برای SaaS</li>
+          <li>Penetration vs Skimming</li>
+          <li>تحلیل Price Elasticity</li>
+        </ul>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/pricing-strategy [محصول و بازار هدف]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/strategy-one-page</div>
+        <div class="skill-tags"><span class="skill-tag">مرحله ۳ در /go-to-market</span></div>
+      </div>
+      <p>اینسایت‌ها را به Strategic Intent و GTM Plan تبدیل می‌کند — نقشه راه شفاف با OKR (یا تعریف OKR اگر وجود ندارد) و تحلیل ریسک.</p>
+      <div class="skill-inner-box">
+        <h5>خروجی‌های کلیدی</h5>
+        <ul>
+          <li>اهداف OKR دوره جاری — یا تعریف اولیه اگر موجود نیست</li>
+          <li>اولویت‌بندی سگمنت‌ها</li>
+          <li>سناریوهای تخصیص بودجه</li>
+          <li>تحلیل ریسک Pre-mortem</li>
+        </ul>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/strategy-one-page [توصیف عرضه یا هدف]</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 2 ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Category 2 · Growth & Execution</div>
+    <h2 class="section-title">دسته ۲ — <em>عملیات رشد و جذب</em></h2>
+    <p class="section-intro">پنج اسکیل اجرایی — از طراحی کمپین و لندینگ تا مقیاس‌پذیری و نگهداشت مشتری.</p>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/acquisition-pull</div>
+        <div class="skill-tags"><span class="skill-tag">مرحله ۵ در /go-to-market</span></div>
+      </div>
+      <p>طراحی کمپین‌های خلاقانه و Channel Mastery. خروجی نهایی بریف کامل قابل تحویل به آژانس است.</p>
+      <div class="skill-inner-box">
+        <h5>خروجی‌ها</h5>
+        <ul>
+          <li>بریف کامل کمپین</li>
+          <li>Creative Brief — آماده تحویل به آژانس</li>
+          <li>کانال‌های بهینه با اولویت‌بندی</li>
+          <li>تخمین CAC به تفکیک کانال</li>
+        </ul>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/acquisition-pull [توصیف کمپین و هدف]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/landing-architect</div>
+        <div class="skill-tags"><span class="skill-tag">FABV + قانون ۵ ثانیه</span></div>
+      </div>
+      <p>تبدیل استراتژی به ساختار محتوایی لندینگ‌پیج — بر اساس مثلث PND و ساختار FABV.</p>
+      <div class="skill-inner-grid">
+        <div class="skill-inner-box">
+          <h5>ساختار FABV</h5>
+          <ul>
+            <li>Features — مشخصات فنی</li>
+            <li>Advantages — چرا برتر است</li>
+            <li>Benefits — بازده برای کاربر</li>
+            <li>Value — ROI کمی</li>
+          </ul>
+        </div>
+        <div class="skill-inner-box">
+          <h5>قوانین الزامی</h5>
+          <ul>
+            <li>قانون ۵ ثانیه: چه؟ سود؟ گام بعد؟</li>
+            <li>Friction Removal در CTA</li>
+            <li>نشان دادن نتیجه، نه محصول</li>
+          </ul>
+        </div>
+      </div>
+      <div class="skill-call">فراخوانی: <b>/landing-architect [محصول یا سرویس]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/organic-growth</div>
+        <div class="skill-tags"><span class="skill-tag">SEO · محتوا · Community</span></div>
+      </div>
+      <p>کاهش وابستگی به کانال‌های پولی. تقویم محتوای ۳ ماهه، Topic Cluster با Pillar Pages، و شاخص‌های DA/DR.</p>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/organic-growth [حوزه محصول یا هدف]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/growth-engine</div>
+        <div class="skill-tags"><span class="skill-tag">مقیاس‌پذیری</span></div>
+      </div>
+      <p>ساخت Performance Engine برای Scaling سیستماتیک — Acquisition Loops، AB Testing، و North Star Metric. <em>نه</em> برای محصول در مرحله کشف.</p>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/growth-engine [وضعیت رشد فعلی و هدف]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/retention-audit</div>
+        <div class="skill-tags"><span class="skill-tag">مرحله ۱ در /retention-check</span></div>
+      </div>
+      <p>نگهبان دارایی‌های فعلی — Cohort Analysis برای شناسایی دقیق نقاط ریزش، Deep Activation triggers، و Reactivation.</p>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/retention-audit [وضعیت فعلی و داده‌های موجود]</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 3 ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Category 3 · Positioning & Infrastructure</div>
+    <h2 class="section-title">دسته ۳ — <em>تمایز و زیرساخت</em></h2>
+    <p class="section-intro">سه اسکیل برای ساخت برند، مدیریت بحران، و معماری زیرساخت MarTech.</p>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/brand-positioning</div>
+        <div class="skill-tags"><span class="skill-tag">7 Powers</span><span class="skill-tag">مرحله ۲ در /go-to-market</span></div>
+      </div>
+      <p>ایجاد تمایز استراتژیک پایدار بر اساس مدل 7 Powers — با /competitive-intel به عنوان input اجباری. خروجی: Positioning Statement + روایت مرکزی برند که فیلتر نهایی تأیید تمام کپی‌رایتینگ‌ها می‌شود.</p>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/brand-positioning [محصول و بازار رقابتی]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/crisis-management</div>
+        <div class="skill-tags"><span class="skill-tag new">🆕 جدید</span></div>
+      </div>
+      <p>حفاظت از اعتبار برند در بحران — پروتکل ۴ مرحله‌ای با پیام اولیه در ۲ ساعت.</p>
+      <div class="skill-inner-box">
+        <h5>پروتکل ۴ مرحله‌ای</h5>
+        <ul>
+          <li>ارزیابی فوری — شدت، گستره، منشأ</li>
+          <li>پیام اولیه شفاف (حداکثر ۲ ساعت)</li>
+          <li>برنامه اصلاح قابل سنجش (۲۴ ساعت)</li>
+          <li>پایش مستمر تا رفع بحران</li>
+        </ul>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/crisis-management [توصیف بحران]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/martech-platform</div>
+        <div class="skill-tags"><span class="skill-tag">CRM · Automation</span></div>
+      </div>
+      <p>معمار زیرساخت MarTech — انتخاب، پیاده‌سازی و یکپارچه‌سازی ابزارها. نقشه اکوسیستم، بریف اتوماسیون، و بریف فنی API.</p>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/martech-platform [نیاز یا چالش تکنولوژی]</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 4 ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Category 4 · Analytics & Memory</div>
+    <h2 class="section-title">دسته ۴ — <em>تحلیل و حافظه</em></h2>
+    <p class="section-intro">دو اسکیل حیاتی: اولی سخت‌ترین سوال مارکتینگ را جواب می‌دهد، دومی مشکل شماره یک (گم شدن تصمیمات) را حل می‌کند.</p>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/data-pinpoint</div>
+        <div class="skill-tags"><span class="skill-tag">مرحله ۲ در /retention-check</span></div>
+      </div>
+      <p>تصمیم‌گیری داده‌محور دقیق — Multi-touch Attribution و داشبورد BI. اثربخشی واقعی هر کانال را نشان می‌دهد.</p>
+      <div class="skill-inner-box">
+        <h5>خروجی‌های کلیدی</h5>
+        <ul>
+          <li>تحلیل Attribution Model (Multi-touch)</li>
+          <li>گزارش‌های بصری BI</li>
+          <li>مسیرهای طلایی فروش</li>
+          <li>نقاط بهینه‌سازی با اولویت ROI</li>
+        </ul>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/data-pinpoint [سوال تحلیلی یا داده‌های موجود]</b></div>
+    </div>
+
+    <div class="skill-detail">
+      <div class="skill-detail-header">
+        <div class="skill-detail-title">/decision-logger</div>
+        <div class="skill-tags"><span class="skill-tag new">🆕 بهبودیافته</span><span class="skill-tag">خودکار در chains</span></div>
+      </div>
+      <p>حافظه سازمانی ایجنت — تمام تصمیمات کلیدی، تغییرات اسکوپ، و فرضیات اثبات/رد‌شده ثبت می‌شوند. توسط تمام chain commands به صورت خودکار در انتها فراخوانی می‌شود.</p>
+      <div class="skill-inner-box">
+        <h5>ساختار ۸ فیلد — نمونه واقعی</h5>
+<pre style="font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--bg); padding: 16px; border-radius: 4px; direction: ltr; text-align: left; margin-top: 12px; color: var(--ink-soft); line-height: 1.8;">تاریخ:      2026-03-15
+پروژه:      Q2 Campaign — SaaS Segment
+تصمیم:      کانال LinkedIn را متوقف کردیم
+چرا:        CAC از Google Ads 3x بالاتر بود
+فرضیه:      H3 — LinkedIn برای B2C موثر نیست
+تأیید:      Sara M. — CMO
+اسکیل:      /data-pinpoint
+وضعیت:     تأیید‌شده</pre>
+      </div>
+      <div class="skill-call" style="margin-top: 20px;">فراخوانی: <b>/decision-logger [توصیف تصمیم]</b> — یا خودکار در انتهای هر chain</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CHAIN COMMANDS ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Orchestration · Chain Commands</div>
+    <h2 class="section-title">۴ Chain Command — <em>وقتی یک اسکیل کافی نیست</em></h2>
+    <p class="section-intro">
+      Chain commands چندین اسکیل را در توالی اجرا می‌کنند، بین مراحل منتظر تأیید می‌مانند،
+      و یک خروجی یکپارچه می‌دهند. هیچ مرحله‌ای بدون تأیید قبلی پیش نمی‌رود.
+    </p>
+
+    <div class="chain primary">
+      <div class="chain-head">
+        <div class="chain-name">/go-to-market</div>
+        <div class="chain-tags">
+          <span class="skill-tag">۷ اسکیل در توالی</span>
+          <span class="skill-tag">منتظر تأیید</span>
+        </div>
+      </div>
+      <p class="chain-desc">کامل‌ترین workflow مارکتینگ — از ایده اولیه تا ثبت نهایی در حافظه. هیچ کمپینی بدون تحلیل بازار، هیچ بودجه‌ای بدون هدف.</p>
+      <div class="chain-steps">
+        <div class="chain-step"><div class="chain-step-num">۱</div><code>/probe-discovery</code><span>سگمنت و درد مشتری</span></div>
+        <div class="chain-step"><div class="chain-step-num">۲</div><code>/competitive-intel</code><span>رصد رقبا و Positioning Map</span></div>
+        <div class="chain-step"><div class="chain-step-num">۳</div><code>/brand-positioning</code><span>مزیت و روایت مرکزی</span></div>
+        <div class="chain-step"><div class="chain-step-num">۴</div><code>/strategy-one-page</code><span>OKR و بودجه</span></div>
+        <div class="chain-step"><div class="chain-step-num">۵</div><code>/landing-architect</code><span>مقصد و پیام تبدیل</span></div>
+        <div class="chain-step"><div class="chain-step-num">۶</div><code>/acquisition-pull</code><span>بریف و کانال‌ها</span></div>
+        <div class="chain-step"><div class="chain-step-num">۷</div><code>/decision-logger</code><span>ثبت در حافظه</span></div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div class="chain-head">
+        <div class="chain-name">/retention-check</div>
+        <div class="chain-tags"><span class="skill-tag">۲ اسکیل</span></div>
+      </div>
+      <p class="chain-desc">تحلیل کامل ریزش + Attribution — همه چیزی که برای جلسه بازبینی وفاداری نیاز دارید.</p>
+      <div class="chain-steps">
+        <div class="chain-step"><div class="chain-step-num">۱</div><code>/retention-audit</code><span>Cohort Analysis</span></div>
+        <div class="chain-step"><div class="chain-step-num">۲</div><code>/data-pinpoint</code><span>Attribution</span></div>
+        <div class="chain-step"><div class="chain-step-num">↦</div><code>output</code><span>گزارش یکپارچه</span></div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div class="chain-head">
+        <div class="chain-name">/brand-sprint</div>
+        <div class="chain-tags"><span class="skill-tag">۳ اسکیل</span></div>
+      </div>
+      <p class="chain-desc">از رصد رقبا تا روایت برند و تقویم محتوا — در یک session.</p>
+      <div class="chain-steps">
+        <div class="chain-step"><div class="chain-step-num">۱</div><code>/competitive-intel</code><span>رقبا</span></div>
+        <div class="chain-step"><div class="chain-step-num">۲</div><code>/brand-positioning</code><span>موقعیت</span></div>
+        <div class="chain-step"><div class="chain-step-num">۳</div><code>/organic-growth</code><span>تقویم محتوا</span></div>
+        <div class="chain-step"><div class="chain-step-num">↦</div><code>output</code><span>سند برند + تقویم</span></div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div class="chain-head">
+        <div class="chain-name">/campaign-launch</div>
+        <div class="chain-tags"><span class="skill-tag">۲ اسکیل</span><span class="skill-tag">نیاز به تأیید</span></div>
+      </div>
+      <p class="chain-desc">بریف کامل کمپین + لندینگ‌پیج — آماده تحویل به آژانس یا اجرای داخلی.</p>
+      <div class="chain-steps">
+        <div class="chain-step"><div class="chain-step-num">۱</div><code>/acquisition-pull</code><span>بریف کمپین</span></div>
+        <div class="chain-step"><div class="chain-step-num">۲</div><code>/landing-architect</code><span>Content Wireframe</span></div>
+        <div class="chain-step"><div class="chain-step-num">↦</div><code>output</code><span>بریف آژانس</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ACT IV ========== -->
+<div class="act-marker">
+  <div class="container">
+    <div class="act-num">Act IV</div>
+    <div class="act-title">استانداردها و مرزها</div>
+    <div class="act-sub">The Rules</div>
+  </div>
+</div>
+
+<!-- ========== OUTPUT STANDARDS (with OKR fallback) ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Layer 1 · Policy · Output Standards</div>
+    <h2 class="section-title">ساختار شش‌گانه خروجی</h2>
+    <p class="section-intro">
+      هر خروجی ایجنت بدون استثنا این ساختار شش‌گانه را دارد. با یک نگاه، CMO می‌فهمد
+      خروجی کجای پروژه است و چه سطح تأییدی نیاز دارد.
+    </p>
+
+    <div class="std-grid">
+      <div class="std-card">
+        <div class="std-num">۱</div>
+        <h4>پیوست به OKR</h4>
+        <p>ارتباط اقدام با اهداف کلیدی سازمان. بدون این بخش، پیشنهاد در هوا معلق است.</p>
+      </div>
+      <div class="std-card">
+        <div class="std-num">۲</div>
+        <h4>مهندسی شاخص‌ها</h4>
+        <p>برآورد کمی از CAC، LTV و ROI. پایداری اقتصادی باید مستند باشد — نه تخمین شفاهی.</p>
+      </div>
+      <div class="std-card">
+        <div class="std-num">۳</div>
+        <h4><span class="badge-new">NEW</span>سطح اطمینان</h4>
+        <p>🟢 داده واقعی · 🟡 فرضیه معقول · 🔴 نیاز به اعتبارسنجی. در هر خروجی درج می‌شود.</p>
+      </div>
+      <div class="std-card">
+        <div class="std-num">۴</div>
+        <h4>تحلیل ریسک</h4>
+        <p>Pre-mortem: نقاط شکست احتمالی + Contingency Plans. اجباری، نه اختیاری.</p>
+      </div>
+      <div class="std-card">
+        <div class="std-num">۵</div>
+        <h4>مرزهای عملیاتی</h4>
+        <p>لیست صریح Out-of-Scope — جلوگیری از Scope Creep.</p>
+      </div>
+      <div class="std-card">
+        <div class="std-num">۶</div>
+        <h4><span class="badge-new">NEW</span>طبقه‌بندی اقدام</h4>
+        <p>⚡ Quick Win (زیر ۲ هفته) یا 🏗️ Strategic Initiative (نیاز به برنامه‌ریزی).</p>
+      </div>
+    </div>
+
+    <!-- NEW: OKR FALLBACK -->
+    <div class="okr-fallback">
+      <h4>اما اگر سازمان OKR تعریف‌شده نداشته باشد؟</h4>
+      <p>
+        خیلی از سازمان‌ها — به‌ویژه در مراحل اولیه — OKR رسمی ندارند. سیستم با سلسله‌مراتب fallback کار می‌کند:
+        هر لایه‌ای که در دسترس باشد استفاده می‌شود. اگر هیچ‌کدام نبود، اولین کار کمک به تعریف OKR است.
+      </p>
+      <div class="fallback-chain">
+        <div class="fallback-step">
+          <div class="fallback-level">Level 1 · اولویت اول</div>
+          <h5>OKR رسمی</h5>
+          <p>اگر سازمان OKR مصوب این کوارتر را دارد، همه خروجی‌ها به آن متصل می‌شوند.</p>
+        </div>
+        <div class="fallback-step">
+          <div class="fallback-level">Level 2 · اگر OKR نبود</div>
+          <h5>Strategic Objectives</h5>
+          <p>اهداف کلی کوارتر یا سال که شاید در Slide deck مدیریت باشند ولی OKR رسمی نیستند.</p>
+        </div>
+        <div class="fallback-step">
+          <div class="fallback-level">Level 3 · اگر هیچ‌کدام نبود</div>
+          <h5>North Star Metric</h5>
+          <p>یک متریک مرکزی که همه تیم سر آن توافق دارند (MRR، Active Users، NPS).</p>
+        </div>
+        <div class="fallback-step">
+          <div class="fallback-level">Level 4 · هیچ چیز موجود نیست</div>
+          <h5>اول /strategy-one-page</h5>
+          <p>سیستم از شما می‌خواهد ابتدا اهداف ساده را تعریف کنید. این اسکیل کمک می‌کند یک OKR اولیه بسازید.</p>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════ QUICK REFERENCE ══ -->
-<div class="section">
+<!-- ========== QUICK REFERENCE TABLE ========== -->
+<section>
   <div class="container">
-    <span class="sec-label">Quick Reference</span>
-    <h2 class="sec-title">کدام موقعیت، کدام اسکیل؟</h2>
-    <p class="sec-desc">جدول مرجع سریع — بدون این جدول، باید تمام ۱۵ اسکیل را بخوانی تا بدانی از کجا شروع کنی.</p>
+    <div class="eyebrow">Quick Reference</div>
+    <h2 class="section-title">کدام موقعیت، کدام اسکیل؟</h2>
+    <p class="section-intro">
+      حالا که با اسکیل‌ها آشنا شدید، این جدول پل بین موقعیت واقعی و دستور مناسب است.
+      بدون آن، زمان زیادی صرف انتخاب اسکیل اشتباه می‌شود.
+    </p>
 
-    <table class="qref-table">
+    <table>
       <thead>
         <tr>
-          <th>موقعیت</th>
+          <th style="width: 40%;">موقعیت واقعی</th>
           <th>اسکیل پیشنهادی</th>
           <th>یا Chain Command</th>
         </tr>
@@ -617,869 +2554,240 @@ footer { background: var(--bg-inset); border-top: 1px solid var(--border); paddi
         <tr><td>«بحران در شبکه‌های اجتماعی»</td><td><code>/crisis-management</code></td><td>—</td></tr>
         <tr><td>«CRM جدید انتخاب کنیم»</td><td><code>/martech-platform</code></td><td>—</td></tr>
         <tr><td>«محتوای ارگانیک شروع کنیم»</td><td><code>/organic-growth</code></td><td><code>/brand-sprint</code></td></tr>
-        <tr><td>«جلسه تصمیم مهمی داشتیم»</td><td><code>/decision-logger</code></td><td>— (اتوماتیک در chains)</td></tr>
+        <tr><td>«جلسه تصمیم مهمی داشتیم»</td><td><code>/decision-logger</code></td><td>خودکار در chains</td></tr>
       </tbody>
     </table>
   </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════ OUTPUT STANDARDS ══ -->
-<div class="section section-alt">
+<!-- ========== AUTHORITY LEVELS ========== -->
+<section>
   <div class="container">
-    <span class="sec-label">Layer 1 · Policy</span>
-    <h2 class="sec-title">استانداردهای خروجی</h2>
-    <p class="sec-desc">تمامی خروجی‌های ایجنت بدون استثنا باید ساختار شش‌گانه زیر را داشته باشند. هر خروجی بدون این ساختار ناقص است.</p>
-
-    <div class="two-col">
-      <div>
-        <div class="std-row">
-          <div class="std-num">۱</div>
-          <div class="std-body">
-            <div class="std-title">پیوست استراتژیک (OKR)</div>
-            <div class="std-desc">ارتباط اقدام پیشنهادی با اهداف کلیدی سازمان. بدون این بخش، هر پیشنهاد در هوا معلق است.</div>
-          </div>
-        </div>
-        <div class="std-row">
-          <div class="std-num">۲</div>
-          <div class="std-body">
-            <div class="std-title">مهندسی شاخص‌ها (Marketing Economics)</div>
-            <div class="std-desc">برآورد کمی از CAC، LTV و ROI. پایداری اقتصادی باید مستند باشد — نه تخمین شفاهی.</div>
-          </div>
-        </div>
-        <div class="std-row">
-          <div class="std-num" style="background:var(--green-bg);border-color:var(--green-border);">۳</div>
-          <div class="std-body">
-            <div class="std-title">سطح اطمینان <span class="bi new">🆕</span></div>
-            <div class="std-desc">🟢 داده واقعی · 🟡 فرضیه معقول · 🔴 نیاز به اعتبارسنجی. در هر خروجی درج می‌شود.</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="std-row">
-          <div class="std-num">۴</div>
-          <div class="std-body">
-            <div class="std-title">تحلیل ریسک (Pre-mortem)</div>
-            <div class="std-desc">نقاط شکست احتمالی + Contingency Plans. این بخش اجباری است — نه اختیاری.</div>
-          </div>
-        </div>
-        <div class="std-row">
-          <div class="std-num">۵</div>
-          <div class="std-body">
-            <div class="std-title">مرزهای عملیاتی (Out-of-Scope)</div>
-            <div class="std-desc">لیست صریح مواردی که در این اقدام لحاظ نمی‌شوند. جلوگیری از Scope Creep.</div>
-          </div>
-        </div>
-        <div class="std-row">
-          <div class="std-num" style="background:var(--green-bg);border-color:var(--green-border);">۶</div>
-          <div class="std-body">
-            <div class="std-title">طبقه‌بندی اقدام <span class="bi new">🆕</span></div>
-            <div class="std-desc">⚡ <strong>Quick Win</strong> (زیر ۲ هفته) یا 🏗️ <strong>Strategic Initiative</strong> (نیاز به برنامه‌ریزی)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <hr class="divider">
-
-    <div class="formula">
-      «اگر [تغییر] انجام شود، انتظار داریم [متریک] به میزان [X] تغییر کند زیرا [دلیل علمی/بیزنسی].»<br>
-      <span style="font-size:0.75em;opacity:0.7;">این فرمت برای تمام پیشنهادات کمپین و تغییر مسیر الزامی است</span>
-    </div>
-
-    <div class="mt-24">
-      <div class="conf-row high"><span class="conf-icon">🟢</span><span class="conf-label">بالا</span><span class="conf-desc">داده واقعی و اندازه‌گیری‌شده — قابل اتکا برای تخصیص بودجه فوری</span></div>
-      <div class="conf-row mid"><span class="conf-icon">🟡</span><span class="conf-label">متوسط</span><span class="conf-desc">فرضیه معقول با شواهد غیرمستقیم — تأیید اضافی قبل از بودجه بزرگ</span></div>
-      <div class="conf-row low"><span class="conf-icon">🔴</span><span class="conf-label">پایین</span><span class="conf-desc">بهترین تخمین موجود — حتماً قبل از اجرا اعتبارسنجی شود</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ SKILLS OVERVIEW ══ -->
-<div class="section">
-  <div class="container">
-    <span class="sec-label">Skills Reference</span>
-    <h2 class="sec-title">نقشه کل اسکیل‌ها</h2>
-    <p class="sec-desc">هر اسکیل یک workflow متمرکز و context-aware است. مستقیم فراخوانی کنید یا chain commands آن‌ها را در توالی اجرا می‌کنند.</p>
-
-    <div style="margin-bottom:10px;font-size:0.78em;font-weight:700;color:var(--text-xs);letter-spacing:0.05em;text-transform:uppercase;">اسکیل‌های اختصاصی مارکتینگ — ۱۵ اسکیل</div>
-    <div class="skills-grid">
-      <div class="skill-card-sm"><span class="name">/marketing-logic</span><div class="desc">قطب‌نمای علمی — هر ایده را با منطق مارکتینگ تطبیق می‌دهد</div></div>
-      <div class="skill-card-sm"><span class="name">/probe-discovery</span><div class="desc">مشتری‌پژوهی دقیق — Pain، Need، Desire با BANT</div></div>
-      <div class="skill-card-sm"><span class="name">/strategy-one-page</span><div class="desc">GTM Plan یک‌صفحه‌ای با OKR و تحلیل ریسک</div></div>
-      <div class="skill-card-sm new-skill"><span class="name">/competitive-intel 🆕</span><div class="desc">رصد سیستماتیک رقبا — input اصلی برای Brand Positioning</div></div>
-      <div class="skill-card-sm new-skill"><span class="name">/pricing-strategy 🆕</span><div class="desc">قیمت‌گذاری به عنوان lever استراتژیک مارکتینگ</div></div>
-      <div class="skill-card-sm"><span class="name">/acquisition-pull</span><div class="desc">معماری کمپین‌های جذب و Channel Mastery</div></div>
-      <div class="skill-card-sm"><span class="name">/landing-architect</span><div class="desc">لندینگ با FABV و قانون ۵ ثانیه</div></div>
-      <div class="skill-card-sm"><span class="name">/organic-growth</span><div class="desc">SEO، محتوا و Community Building</div></div>
-      <div class="skill-card-sm"><span class="name">/growth-engine</span><div class="desc">Acquisition Loops و AB Testing</div></div>
-      <div class="skill-card-sm"><span class="name">/retention-audit</span><div class="desc">Cohort Analysis و نقاط ریزش</div></div>
-      <div class="skill-card-sm"><span class="name">/brand-positioning</span><div class="desc">مزیت رقابتی پایدار با 7 Powers</div></div>
-      <div class="skill-card-sm"><span class="name">/crisis-management</span><div class="desc">بحران برند — پاسخ در ۲ ساعت</div></div>
-      <div class="skill-card-sm"><span class="name">/martech-platform</span><div class="desc">معمار MarTech، CRM و اتوماسیون</div></div>
-      <div class="skill-card-sm"><span class="name">/data-pinpoint</span><div class="desc">Attribution Model و داشبورد BI</div></div>
-      <div class="skill-card-sm"><span class="name">/decision-logger</span><div class="desc">حافظه سازمانی — هیچ تصمیمی گم نمی‌شود</div></div>
-    </div>
-
-    <div style="margin-top:24px;margin-bottom:10px;font-size:0.78em;font-weight:700;color:var(--text-xs);letter-spacing:0.05em;text-transform:uppercase;">اسکیل‌های اشتراکی با تیم پروداکت — ۶ اسکیل</div>
-    <div class="skills-grid">
-      <div class="skill-card-sm shared-sk"><span class="name">/prompt-optimizer</span><div class="desc">بهینه‌سازی پرامپت — ضروری برای بریف آژانس</div></div>
-      <div class="skill-card-sm shared-sk"><span class="name">/presentation-style</span><div class="desc">HTML slide deck استاندارد برای گزارش به مدیریت</div></div>
-      <div class="skill-card-sm shared-sk"><span class="name">/wireframe-generator</span><div class="desc">وایرفریم لندینگ با تمام state ها</div></div>
-      <div class="skill-card-sm shared-sk"><span class="name">/task-writer</span><div class="desc">تسک Linear با ساختار ۴بخشی</div></div>
-      <div class="skill-card-sm shared-sk"><span class="name">/meeting-support</span><div class="desc">آجندا و action item جلسات کمپین</div></div>
-      <div class="skill-card-sm shared-sk"><span class="name">/design-system-check</span><div class="desc">بررسی کامپوننت‌های موجود قبل از درخواست طراحی</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ SKILLS DETAIL ══ -->
-<div class="section section-alt">
-  <div class="container">
-    <span class="sec-label">Skills Detail · Foundation</span>
-    <h2 class="sec-title">دسته ۱: بنیاد و استراتژی</h2>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">فاز کشف</span></div>
-      <div class="skill-title">marketing-logic</div>
-      <div class="skill-lead">هر ایده خام یا درخواست تیم را با منطق پایه مارکتینگ تطبیق بده — قبل از اینکه منابع اشتباه خرج شود.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«می‌خواهیم این کمپین را اجرا کنیم»، «مدیریت این ایده را داد»، «آیا این با استراتژی ما همخوانی دارد؟» — هر زمان که ایده خام نیاز به validation دارد قبل از شروع اجرا.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>مدل ذهنی مناسب (STP یا JTBD یا 7 Powers)</li>
-            <li>شفاف‌سازی نقش مارکتینگ در این تسک</li>
-            <li>انطباق با تریگرهای رفتاری مشتری</li>
-            <li>تشخیص انحراف استراتژیک احتمالی</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/marketing-logic [توصیف ایده یا درخواست]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">کشف بازار</span></div>
-      <div class="skill-title">probe-discovery</div>
-      <div class="skill-lead">مشتری‌پژوهی دقیق فراتر از حدس — شناسایی Pain، Need و Desire با ارزیابی BANT.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«نمی‌دانیم مشتری چه می‌خواهد»، «قبل از طراحی فیچر»، «می‌خواهیم وارد سگمنت جدیدی بشویم»، «Value Proposition ما واضح نیست».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">ارزیابی BANT</div>
-          <ul>
-            <li><strong>Budget:</strong> آیا بودجه خرید وجود دارد؟</li>
-            <li><strong>Authority:</strong> آیا این فرد تصمیم‌گیر است؟</li>
-            <li><strong>Need:</strong> آیا نیاز واقعی وجود دارد؟</li>
-            <li><strong>Timing:</strong> زمان‌بندی خرید چیست؟</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/probe-discovery [سگمنت یا بازار هدف]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
-      <div class="skill-title">competitive-intel</div>
-      <div class="skill-lead">رصد سیستماتیک رقبا — input اصلی برای Brand Positioning و Pricing Strategy. بدون این اسکیل، موقعیت‌یابی کور است.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«رقیب جدیدی وارد بازار شد»، «می‌خواهیم Brand Positioning را بازبینی کنیم»، «قبل از هر /go-to-market»، «مدل قیمت‌گذاری رقبا را بفهمیم».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>Competitive Matrix (جدول مقایسه ویژگی‌ها)</li>
-            <li>Gap Analysis — فرصت‌های استفاده‌نشده</li>
-            <li>Positioning Map بر اساس ابعاد کلیدی</li>
-            <li>پیشنهاد defensive و offensive moves</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/competitive-intel [نام رقبا یا حوزه بازار]</code></div>
-      <div class="skill-note">این اسکیل به عنوان input به <code>/brand-positioning</code> و <code>/pricing-strategy</code> تغذیه می‌دهد. در /brand-sprint به صورت خودکار اجرا می‌شود.</div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
-      <div class="skill-title">pricing-strategy</div>
-      <div class="skill-lead">قیمت‌گذاری به عنوان قدرتمندترین lever مارکتینگ — نه یک تصمیم مالی صرف، بلکه یک ابزار موقعیت‌یابی.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«مدل قیمت‌گذاری جدید تعریف کنیم»، «Freemium طراحی کنیم»، «قیمت را تغییر دهیم»، «pricing page را بازبینی کنیم»، «رقیب قیمت را کاهش داد».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">مدل‌های پوشش‌داده‌شده</div>
-          <ul>
-            <li>Value-based Pricing — بر اساس ارزش ادراک‌شده</li>
-            <li>Freemium / Usage-based — برای SaaS</li>
-            <li>Penetration vs Skimming</li>
-            <li>تحلیل Price Elasticity</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/pricing-strategy [محصول و بازار هدف]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۳ در /go-to-market</span></div>
-      <div class="skill-title">strategy-one-page</div>
-      <div class="skill-lead">اینسایت‌ها را به Strategic Intent و GTM Plan تبدیل کن — یک نقشه راه شفاف با OKR و تحلیل ریسک.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>وقتی داده‌های اکتشافی آماده است. پیش از لانچ کمپین، عرضه محصول، یا ورود به بازار جدید. <em>نه</em> در ابتدای کشف — ابتدا /probe-discovery اجرا کنید.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>اهداف OKR دوره جاری</li>
-            <li>اولویت‌بندی سگمنت‌ها</li>
-            <li>سناریوهای تخصیص بودجه</li>
-            <li>تحلیل ریسک (Pre-mortem)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/strategy-one-page [توصیف عرضه یا هدف]</code></div>
-    </div>
-
-    <hr class="divider">
-    <span class="sec-label">Skills Detail · Growth & Execution</span>
-    <h2 class="sec-title">دسته ۲: عملیات رشد و جذب</h2>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۵ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۱ در /campaign-launch</span></div>
-      <div class="skill-title">acquisition-pull</div>
-      <div class="skill-lead">طراحی کمپین‌های خلاقانه و Channel Mastery — با تمرکز بر CRO و تریگرهای فعال‌سازی.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«کمپین لانچ می‌کنیم»، «کدام کانال را انتخاب کنیم؟»، «نرخ تبدیل پایین است»، «بریف خلاقیت برای آژانس آماده کنیم».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>بریف کامل کمپین</li>
-            <li>Creative Brief — آماده تحویل به آژانس</li>
-            <li>کانال‌های بهینه با اولویت‌بندی</li>
-            <li>تخمین CAC به تفکیک کانال</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/acquisition-pull [توصیف کمپین و هدف]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۴ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۲ در /campaign-launch</span></div>
-      <div class="skill-title">landing-architect</div>
-      <div class="skill-lead">تبدیل استراتژی به ساختار محتوایی لندینگ‌پیج — بر اساس مثلث PND و ساختار FABV.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">ساختار FABV الزامی</div>
-          <ul>
-            <li><strong>Features:</strong> مشخصات فیزیکی و فنی</li>
-            <li><strong>Advantages:</strong> چرا این ویژگی‌ها برتری می‌دهند</li>
-            <li><strong>Benefits:</strong> بازده اقتصادی، فنی، اجتماعی</li>
-            <li><strong>Value:</strong> ارزش نهایی به صورت کمی (ROI)</li>
-          </ul>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">قوانین الزامی</div>
-          <ul>
-            <li><strong>قانون ۵ ثانیه:</strong> ۱) چه می‌فروشید ۲) چه سودی دارد ۳) قدم بعدی</li>
-            <li><strong>Friction Removal:</strong> شناسایی و حذف عوامل تردید در CTA</li>
-            <li><strong>Outcome visualization:</strong> نشان دادن نتیجه، نه محصول</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/landing-architect [محصول یا سرویس]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۳ در /brand-sprint</span></div>
-      <div class="skill-title">organic-growth</div>
-      <div class="skill-lead">کاهش وابستگی به کانال‌های پولی از طریق SEO، محتوا، و Community Building.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«CAC از کانال‌های پولی بالا رفته»، «می‌خواهیم Authority بسازیم»، «برنامه محتوایی بلندمدت»، «SEO شروع کنیم».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>استراتژی محتوا بر اساس intent مخاطب</li>
-            <li>تقویم محتوای ۳ ماهه</li>
-            <li>Topic Cluster با Pillar Pages</li>
-            <li>شاخص‌های DA/DR و ترافیک ارگانیک</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/organic-growth [حوزه محصول یا هدف]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-mk">مقیاس‌پذیری</span></div>
-      <div class="skill-title">growth-engine</div>
-      <div class="skill-lead">ساخت Performance Engine برای Scaling سیستماتیک — Acquisition Loops و آزمایش داده‌محور.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>وقتی محصول به ثبات رسیده و هدف رشد سریع است. <em>نه</em> برای محصول در مرحله کشف — ابتدا /probe-discovery.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>Growth Model ریاضی</li>
-            <li>طراحی AB Test با فرضیه مشخص</li>
-            <li>Viral Loop Design</li>
-            <li>North Star Metric و محرک‌های آن</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/growth-engine [وضعیت رشد فعلی و هدف]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۱ در /retention-check</span></div>
-      <div class="skill-title">retention-audit</div>
-      <div class="skill-lead">نگهبان دارایی‌های فعلی — تحلیل Cohort برای شناسایی دقیق نقاط ریزش.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«Churn بالا رفته»، «نمی‌دانیم کجا مشتریان را از دست می‌دهیم»، «برنامه وفاداری طراحی کنیم». این اسکیل برای بررسی وضعیت موجود است — برای تعریف اولیه، /probe-discovery.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>Cohort Analysis با نقاط ریزش دقیق</li>
-            <li>Deep Activation triggers</li>
-            <li>استراتژی Reactivation</li>
-            <li>پیشنهاد Loyalty Program</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/retention-audit [وضعیت فعلی و داده‌های موجود]</code></div>
-    </div>
-
-    <hr class="divider">
-    <span class="sec-label">Skills Detail · Positioning & Tech</span>
-    <h2 class="sec-title">دسته ۳: تمایز و زیرساخت</h2>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۲ در /go-to-market</span><span class="skill-tag tag-chain">مرحله ۲ در /brand-sprint</span></div>
-      <div class="skill-title">brand-positioning</div>
-      <div class="skill-lead">ایجاد تمایز استراتژیک پایدار بر اساس مدل 7 Powers — با /competitive-intel به عنوان input اجباری.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«رقیب جدید وارد شد»، «روایت برند بازبینی کنیم»، «Positioning Statement نداریم»، «آماده‌سازی برای بازار جدید». ابتدا /competitive-intel اجرا کنید.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>Positioning Statement نهایی</li>
-            <li>روایت مرکزی برند (فیلتر کپی)</li>
-            <li>تحلیل 7 Powers در بازار</li>
-            <li>Brand Governance Guidelines</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/brand-positioning [محصول و بازار رقابتی]</code></div>
-      <div class="skill-note">روایت مرکزی برند که این اسکیل تولید می‌کند، فیلتر نهایی تأیید تمام کپی‌رایتینگ‌ها در سیستم می‌شود.</div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 جدید</span></div>
-      <div class="skill-title">crisis-management</div>
-      <div class="skill-lead">حفاظت از اعتبار برند در بحران — پروتکل پاسخ ۴ مرحله‌ای با پیام اولیه در ۲ ساعت.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«بازخوردهای منفی گسترده»، «اشتباه در محصول/سرویس»، «حمله رسانه‌ای رقیب»، «کاربران در توییتر ناراضی هستند». سرعت پاسخ‌دهی حیاتی است.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">پروتکل ۴ مرحله‌ای</div>
-          <ul>
-            <li><strong>ارزیابی فوری:</strong> شدت، گستره، منشأ</li>
-            <li><strong>پیام اولیه:</strong> شفاف، انسانی (حداکثر ۲ ساعت)</li>
-            <li><strong>برنامه اصلاح:</strong> اقدامات قابل سنجش (۲۴ ساعت)</li>
-            <li><strong>پایش مستمر:</strong> گزارش‌دهی تا رفع بحران</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/crisis-management [توصیف بحران و وضعیت فعلی]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span></div>
-      <div class="skill-title">martech-platform</div>
-      <div class="skill-lead">معمار زیرساخت MarTech — انتخاب، پیاده‌سازی و یکپارچه‌سازی CRM و اتوماسیون.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«CRM جدید انتخاب کنیم»، «اتوماسیون ایمیل راه بیندازیم»، «جریان داده بین ابزارها خراب است»، «MarTech Stack بررسی کنیم».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>نقشه اکوسیستم MarTech</li>
-            <li>بریف اتوماسیون برای تیم توسعه</li>
-            <li>بریف فنی API و Integration</li>
-            <li>مقایسه ابزارهای جایگزین</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/martech-platform [نیاز یا چالش تکنولوژی]</code></div>
-    </div>
-
-    <hr class="divider">
-    <span class="sec-label">Skills Detail · Analytics & Memory</span>
-    <h2 class="sec-title">دسته ۴ و ۵: تحلیل و حافظه</h2>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-chain">مرحله ۲ در /retention-check</span></div>
-      <div class="skill-title">data-pinpoint</div>
-      <div class="skill-lead">تصمیم‌گیری داده‌محور دقیق — Attribution Model و داشبورد مدیریتی. اثربخشی واقعی هر کانال را نشان می‌دهد.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«کدام کانال واقعاً فروش آورده؟»، «ROI کمپین را بسنجیم»، «داشبورد مدیریتی بسازیم»، «Attribution Model انتخاب کنیم».</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">خروجی‌های کلیدی</div>
-          <ul>
-            <li>تحلیل Attribution Model (Multi-touch)</li>
-            <li>گزارش‌های بصری BI</li>
-            <li>مسیرهای طلایی فروش</li>
-            <li>نقاط بهینه‌سازی با اولویت ROI</li>
-          </ul>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/data-pinpoint [سوال تحلیلی یا داده‌های موجود]</code></div>
-    </div>
-
-    <div class="skill-section">
-      <div class="skill-meta"><span class="skill-tag tag-mk">اسکیل مارکتینگ</span><span class="skill-tag tag-new">🆕 بهبودیافته</span><span class="skill-tag tag-chain">مرحله نهایی در همه chains</span></div>
-      <div class="skill-title">decision-logger</div>
-      <div class="skill-lead">حافظه سازمانی ایجنت — تمام تصمیمات کلیدی، تغییرات اسکوپ، و فرضیات اثبات/رد‌شده ثبت می‌شوند.</div>
-      <div class="skill-body">
-        <div class="skill-block">
-          <div class="skill-block-title">چه زمانی استفاده کنیم</div>
-          <p>«جلسه تمام شد و چیزی تصمیم گرفتیم»، «چرا آن کانال را رها کردیم؟»، «اسکوپ را کاهش دادیم ولی ثبت نشد». توسط تمام chain commands به صورت خودکار در انتها فراخوانی می‌شود.</p>
-        </div>
-        <div class="skill-block">
-          <div class="skill-block-title">ساختار ۸ فیلد — نمونه واقعی</div>
-          <pre><span class="key">تاریخ:</span>      <span class="val">2026-03-15</span>
-<span class="key">پروژه:</span>      <span class="val">Q2 Campaign — SaaS Segment</span>
-<span class="key">تصمیم:</span>      <span class="val">کانال LinkedIn را متوقف کردیم</span>
-<span class="key">چرا:</span>        <span class="val">CAC از Google Ads 3x بالاتر بود</span>
-<span class="key">فرضیه:</span>      <span class="val">H3 — LinkedIn برای B2C موثر نیست</span>
-<span class="key">تأیید:</span>      <span class="val">Sara M. — CMO</span>
-<span class="key">اسکیل:</span>      <span class="val">/data-pinpoint</span>
-<span class="key">وضعیت:</span>     <span class="val">تأیید‌شده</span></pre>
-        </div>
-      </div>
-      <div class="skill-invoke">فراخوانی: <code>/decision-logger [توصیف تصمیم]</code> — یا خودکار در انتهای هر chain command</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ COLLABORATION ══ -->
-<div class="section">
-  <div class="container">
-    <span class="sec-label">Cross-Functional</span>
-    <h2 class="sec-title">نقاط تماس با تیم پروداکت</h2>
-    <p class="sec-desc">مارکتینگ و پروداکت در ۶ نقطه همپوشانی دارند. اسکیل‌های اشتراکی همان خروجی‌ها را با همان فرمت تولید می‌کنند.</p>
-
-    <div class="collab-grid">
-      <div class="collab-zone mk-zone">
-        <div class="collab-zone-title">مارکتینگ (تیل)</div>
-        <div class="collab-item">🔍 <code>/probe-discovery</code> — کشف Pain مشتری</div>
-        <div class="collab-item">📋 <code>/strategy-one-page</code> — GTM Plan</div>
-        <div class="collab-item">🏷️ <code>/pricing-strategy</code> — مدل قیمت</div>
-        <div class="collab-item">📢 <code>/acquisition-pull</code> — کمپین جذب</div>
-        <div class="collab-item">📊 <code>/data-pinpoint</code> — Attribution</div>
-        <div class="collab-item">🧠 <code>/decision-logger</code> — حافظه</div>
-      </div>
-
-      <div class="collab-divider">
-        <div class="collab-point">Pain → Feature Brief</div>
-        <div class="collab-arrow">↔</div>
-        <div class="collab-point">GTM ↔ Roadmap sync</div>
-        <div class="collab-arrow">↔</div>
-        <div class="collab-point">Wireframe handoff</div>
-        <div class="collab-arrow">↔</div>
-        <div class="collab-point">Launch coordination</div>
-      </div>
-
-      <div class="collab-zone pm-zone">
-        <div class="collab-zone-title">پروداکت (آبی)</div>
-        <div class="collab-item">🔬 <code>/problem-framing</code> — تعریف DOD</div>
-        <div class="collab-item">🗺️ <code>/feature-spec</code> — مشخصات فیچر</div>
-        <div class="collab-item">⚙️ <code>/feature-dependency</code> — وابستگی‌ها</div>
-        <div class="collab-item">🎨 <code>/wireframe-generator</code> — وایرفریم</div>
-        <div class="collab-item">🚀 <code>/release-impact</code> — تحلیل انتشار</div>
-        <div class="collab-item">📝 <code>/decision-logger</code> — حافظه</div>
-      </div>
-    </div>
-
-    <div class="callout warn mt-24">
-      ⚠️ <strong>قانون هماهنگی:</strong> هیچ وعده مارکتینگ نباید فراتر از قابلیت‌های موجود یا Roadmap مصوب باشد. قبل از نهایی‌سازی هر GTM Plan، هماهنگی با PM الزامی است.
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ CHAIN COMMANDS ══ -->
-<div class="section section-alt">
-  <div class="container">
-    <span class="sec-label">Chain Commands</span>
-    <h2 class="sec-title">۴ Chain Command</h2>
-    <p class="sec-desc">Chain commands چندین اسکیل را در توالی اجرا می‌کنند، بین هر مرحله منتظر تأیید می‌مانند، و یک خروجی یکپارچه تولید می‌کنند.</p>
-
-    <div style="margin-bottom:40px;">
-      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۷ اسکیل در توالی</span><span class="skill-tag tag-chain">منتظر تأیید</span></div>
-      <div class="skill-title">/go-to-market</div>
-      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">کامل‌ترین workflow مارکتینگ — از ایده اولیه تا ثبت نهایی. هیچ کمپینی بدون تحلیل بازار، هیچ بودجه‌ای بدون هدف.</p>
-      <div class="wf-chain">
-        <div class="wf-row"><span class="wf-num">۱</span><span class="wf-skill">/probe-discovery</span><span class="wf-output">شناسایی سگمنت هدف و دردهای مشتری</span></div>
-        <div class="wf-row"><span class="wf-num">۲</span><span class="wf-skill">/competitive-intel</span><span class="wf-output">رصد رقبا و Positioning Map</span></div>
-        <div class="wf-row"><span class="wf-num">۳</span><span class="wf-skill">/brand-positioning</span><span class="wf-output">مزیت رقابتی و روایت مرکزی برند</span></div>
-        <div class="wf-row"><span class="wf-num">۴</span><span class="wf-skill">/strategy-one-page</span><span class="wf-output">OKRها و سناریوهای تخصیص بودجه</span></div>
-        <div class="wf-row"><span class="wf-num">۵</span><span class="wf-skill">/landing-architect</span><span class="wf-output">مقصد نهایی و پیام تبدیل</span></div>
-        <div class="wf-row"><span class="wf-num">۶</span><span class="wf-skill">/acquisition-pull</span><span class="wf-output">بریف خلاقانه و کانال‌های جذب</span></div>
-        <div class="wf-row"><span class="wf-num">۷</span><span class="wf-skill">/decision-logger</span><span class="wf-output">ثبت در حافظه سازمانی</span></div>
-      </div>
-      <div class="skill-invoke mt-16">فراخوانی: <code>/go-to-market [توصیف محصول یا کمپین]</code></div>
-    </div>
-
-    <div style="margin-bottom:40px;padding-top:36px;border-top:1px solid var(--border);">
-      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۲ اسکیل</span></div>
-      <div class="skill-title">/retention-check</div>
-      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">تحلیل کامل ریزش + Attribution — همه چیزی که برای جلسه بازبینی وفاداری نیاز دارید.</p>
-      <div class="chain-flow">
-        <span class="chain-step">/retention-audit</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">/data-pinpoint</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">گزارش یکپارچه ریزش + Attribution</span>
-      </div>
-      <div class="skill-invoke mt-16">فراخوانی: <code>/retention-check [دوره زمانی یا سگمنت]</code></div>
-    </div>
-
-    <div style="margin-bottom:40px;padding-top:36px;border-top:1px solid var(--border);">
-      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۳ اسکیل</span></div>
-      <div class="skill-title">/brand-sprint</div>
-      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">از رصد رقبا تا روایت برند و تقویم محتوا — در یک session.</p>
-      <div class="chain-flow">
-        <span class="chain-step">/competitive-intel</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">/brand-positioning</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">/organic-growth</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">سند برند + تقویم محتوا</span>
-      </div>
-      <div class="skill-invoke mt-16">فراخوانی: <code>/brand-sprint [توصیف برند و بازار هدف]</code></div>
-    </div>
-
-    <div style="padding-top:36px;border-top:1px solid var(--border);">
-      <div class="skill-meta"><span class="skill-tag tag-chain">Chain Command</span><span class="skill-tag tag-chain">۲ اسکیل</span><span class="skill-tag tag-chain">نیاز به تأیید</span></div>
-      <div class="skill-title">/campaign-launch</div>
-      <p style="font-size:0.9em;color:var(--text-md);margin-bottom:18px;">بریف کامل کمپین + لندینگ‌پیج — آماده تحویل به آژانس یا اجرای داخلی.</p>
-      <div class="chain-flow">
-        <span class="chain-step">/acquisition-pull</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">/landing-architect</span>
-        <span class="chain-arrow">→</span>
-        <span class="chain-step">بریف آژانس + Content Wireframe</span>
-      </div>
-      <div class="skill-invoke mt-16">فراخوانی: <code>/campaign-launch [توصیف کمپین و هدف]</code></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ SESSION INIT ══ -->
-<div class="section">
-  <div class="container">
-    <span class="sec-label">Protocol</span>
-    <h2 class="sec-title">پروتکل آغاز Session</h2>
-    <p class="sec-desc">اولین اقدام ایجنت در هر مکالمه جدید — بدون این ۴ سوال، ایجنت نمی‌داند در کجای پروژه قرار دارد.</p>
-
-    <div class="step-list">
-      <div class="step-item">
-        <div class="step-num">۱</div>
-        <div>
-          <div class="step-title">وضعیت پروژه</div>
-          <div class="step-desc">جدید یا ادامه؟ اگر ادامه است، آخرین تصمیم در <code>decision-log.md</code> چیست؟</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">۲</div>
-        <div>
-          <div class="step-title">اسکوپ درخواست</div>
-          <div class="step-desc">این درخواست در کدام لایه است؟ استراتژی / اجرا / تحلیل / بازبینی</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">۳</div>
-        <div>
-          <div class="step-title">محدودیت‌های فعال</div>
-          <div class="step-desc">محدودیت بودجه، زمان، یا منابع فنی خاصی وجود دارد؟</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">۴</div>
-        <div>
-          <div class="step-title">صاحب تصمیم</div>
-          <div class="step-desc">چه کسی خروجی نهایی را تأیید می‌کند؟ (برای فیلد Sign-off Required)</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout warn mt-16">
-      ⚠️ اگر پاسخ کافی ندادید، ایجنت <strong>با ذکر صریح فرضیاتی که گرفته</strong> پیش می‌رود — بدون توقف کامل.
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ SHARED SKILLS ══ -->
-<div class="section section-alt">
-  <div class="container">
-    <span class="sec-label">Shared Skills</span>
-    <h2 class="sec-title">اسکیل‌های اشتراکی با پروداکت</h2>
-    <p class="sec-desc">این ۶ اسکیل بین PM، Designer، و Marketing مشترک‌اند. خروجی‌هایشان با فرمت استاندارد تیم سازگار است.</p>
-
-    <div class="two-col">
-      <div class="shared-ref">
-        <div class="shared-icon">🔧</div>
-        <div class="shared-body">
-          <span class="sname">/prompt-optimizer</span>
-          <div class="sdesc">آنالیز و بازنویسی پرامپت. ضروری برای بریف آژانس‌ها و ارتباطات فنی — خطا و هزینه توکن را کاهش می‌دهد.</div>
-        </div>
-      </div>
-      <div class="shared-ref">
-        <div class="shared-icon">📊</div>
-        <div class="shared-body">
-          <span class="sname">/presentation-style</span>
-          <div class="sdesc">HTML slide deck استاندارد برای گزارش به مدیریت. همین پرزنتیشن با این اسکیل ساخته شده.</div>
-        </div>
-      </div>
-      <div class="shared-ref">
-        <div class="shared-icon">🖼️</div>
-        <div class="shared-body">
-          <span class="sname">/wireframe-generator</span>
-          <div class="sdesc">وایرفریم تعاملی HTML برای لندینگ‌پیج‌های کمپین — تمام state ها را قبل از طراحی نشان می‌دهد.</div>
-        </div>
-      </div>
-      <div class="shared-ref">
-        <div class="shared-icon">✅</div>
-        <div class="shared-body">
-          <span class="sname">/task-writer</span>
-          <div class="sdesc">تبدیل هر خروجی مارکتینگ به تسک Linear با ساختار ۴بخشی: Context / Story / DOD / Out-of-Scope.</div>
-        </div>
-      </div>
-      <div class="shared-ref">
-        <div class="shared-icon">📅</div>
-        <div class="shared-body">
-          <span class="sname">/meeting-support</span>
-          <div class="sdesc">آجندا قبل از جلسه‌های کمپین، استخراج Action Item و تصمیمات بعد از جلسه.</div>
-        </div>
-      </div>
-      <div class="shared-ref">
-        <div class="shared-icon">🧩</div>
-        <div class="shared-body">
-          <span class="sname">/design-system-check</span>
-          <div class="sdesc">قبل از درخواست طراحی جدید برای کمپین — کامپوننت‌های موجود را inventory می‌کند.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ AUTHORITY ══ -->
-<div class="section">
-  <div class="container">
-    <span class="sec-label">Layer 1 · Policy</span>
-    <h2 class="sec-title">سطوح اختیار و خطوط قرمز</h2>
-    <p class="sec-desc">ایجنت در چارچوب مشخصی کار می‌کند. این مرزها توسط CMO تعریف شده و تغییرناپذیرند.</p>
-
-    <table class="auth-table">
-      <thead>
-        <tr><th>حوزه</th><th>مجاز</th><th>ممنوع</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>💰 بودجه</td><td class="auth-allow">پیشنهاد سناریوهای تخصیص</td><td class="auth-deny">تغییر مستقیم بودجه مصوب</td></tr>
-        <tr><td>📈 Analytics</td><td class="auth-allow">خواندن داده و گزارش‌دهی</td><td class="auth-deny">نوشتن در پنل‌های تبلیغاتی</td></tr>
-        <tr><td>📢 انتشار</td><td class="auth-allow">پیشنهاد و آماده‌سازی محتوا</td><td class="auth-deny">انتشار خودکار بدون Sign-off</td></tr>
-        <tr><td>🔒 داده مشتریان</td><td class="auth-allow">داده تجمیعی و ناشناس</td><td class="auth-deny">ذخیره اطلاعات هویتی (PII)</td></tr>
-        <tr><td>🎯 وعده محصول</td><td class="auth-allow">قابلیت‌های موجود یا Roadmap مصوب</td><td class="auth-deny">قابلیت‌هایی که هنوز وجود ندارند</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout warn mt-24">
-      <strong>پروتکل حل تعارض:</strong> اگر دو اسکیل خروجی متعارض داشتند — تعارض را نام ببر ← هر دو گزینه با trade-off ← توصیه صریح ← تصمیم نهایی با مدیر.
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ 11P FRAMEWORK ══ -->
-<div class="section">
-  <div class="container">
-    <span class="sec-label">Theoretical Foundation</span>
-    <h2 class="sec-title">ریشه‌های علمی: فریم‌ورک ۱۱P</h2>
-    <p class="sec-desc">
-      ساختار اسکیل‌های این agent تصادفی نیست. هر اسکیل مستقیماً از یک ماژول در فریم‌ورک مدیریت مارکتینگ مشتق شده —
-      که یعنی agent در واقع <strong>لایه اجرایی دانش مارکتینگ</strong> است، نه فقط یک ابزار prompt.
+    <div class="eyebrow">Layer 1 · Policy · Guardrails</div>
+    <h2 class="section-title">سطوح اختیار و <em>خطوط قرمز</em></h2>
+    <p class="section-intro">
+      مرزهای ایجنت به اندازه قابلیت‌هایش اهمیت دارد. این مرزها توسط CMO تعریف شده و تغییرناپذیرند.
+      Human-in-the-Loop یعنی ایجنت جایگزین تصمیم‌گیر نیست — فقط سرعت را بالا می‌برد، با کنترل انسانی.
     </p>
 
-    <div style="overflow-x:auto;">
-      <table class="qref-table">
-        <thead>
-          <tr>
-            <th>ماژول دانش (۱۱P)</th>
-            <th>حوزه</th>
-            <th>اسکیل agent</th>
-            <th>یادداشت</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Principles</strong></td>
-            <td>زبان و منطق مارکتینگ</td>
-            <td><code>/marketing-logic</code></td>
-            <td>قطب‌نمای علمی — از همین دانش تغذیه می‌شود</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Probe</strong></td>
-            <td>کشف بازار</td>
-            <td><code>/probe-discovery</code> · <code>/competitive-intel</code></td>
-            <td>BANT، Value Prop، Segmentation</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Plan</strong></td>
-            <td>استراتژی مارکتینگ</td>
-            <td><code>/strategy-one-page</code> · <code>/pricing-strategy</code></td>
-            <td>OKR، GTM Plan، Budget Scenarios</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Pull</strong></td>
-            <td>جذب و فعال‌سازی</td>
-            <td><code>/acquisition-pull</code> · <code>/landing-architect</code></td>
-            <td>Channel Mastery، CRO، Creative Brief</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Preserve</strong></td>
-            <td>ماندگاری و تعامل</td>
-            <td><code>/retention-audit</code></td>
-            <td>Cohort Analysis، Reactivation، Loyalty</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Propel</strong></td>
-            <td>موتور رشد</td>
-            <td><code>/growth-engine</code> · <code>/organic-growth</code></td>
-            <td>Growth Loops، AB Test، Scaling</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Position</strong></td>
-            <td>مزیت رقابتی و برند</td>
-            <td><code>/brand-positioning</code> · <code>/crisis-management</code></td>
-            <td>7 Powers، Narrative، Brand Governance</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Platform</strong></td>
-            <td>تکنولوژی مارکتینگ</td>
-            <td><code>/martech-platform</code></td>
-            <td>CRM، Automation، MarTech Stack</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Predict</strong></td>
-            <td>هوش مصنوعی</td>
-            <td>توزیع‌شده در همه اسکیل‌ها</td>
-            <td>AI capability افقی — نه اسکیل جدا، در هر اسکیل فعال</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">Pinpoint</strong></td>
-            <td>داده و آنالیتیکس</td>
-            <td><code>/data-pinpoint</code></td>
-            <td>Attribution، BI، Data-Driven Decisions</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--tk-bright);">People</strong></td>
-            <td>سازمان و رهبری</td>
-            <td>اسکیل‌های اشتراکی + Collaboration Map</td>
-            <td>هماهنگی با PM و Designer از طریق shared skills</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="authority-grid">
+      <div class="auth-header">حوزه</div>
+      <div class="auth-header">مجاز</div>
+      <div class="auth-header">ممنوع</div>
+
+      <div class="auth-cell area">💰 بودجه</div>
+      <div class="auth-cell allow">پیشنهاد سناریوهای تخصیص</div>
+      <div class="auth-cell deny">تغییر مستقیم بودجه مصوب</div>
+
+      <div class="auth-cell area">📈 Analytics</div>
+      <div class="auth-cell allow">خواندن داده و گزارش‌دهی</div>
+      <div class="auth-cell deny">نوشتن در پنل‌های تبلیغاتی</div>
+
+      <div class="auth-cell area">📢 انتشار</div>
+      <div class="auth-cell allow">پیشنهاد و آماده‌سازی محتوا</div>
+      <div class="auth-cell deny">انتشار خودکار بدون Sign-off</div>
+
+      <div class="auth-cell area">🔒 داده مشتریان</div>
+      <div class="auth-cell allow">داده تجمیعی و ناشناس</div>
+      <div class="auth-cell deny">ذخیره PII</div>
+
+      <div class="auth-cell area">🎯 وعده محصول</div>
+      <div class="auth-cell allow">قابلیت‌های موجود یا Roadmap مصوب</div>
+      <div class="auth-cell deny">قابلیت‌هایی که هنوز وجود ندارند</div>
     </div>
 
-    <div class="callout success mt-24">
-      <strong>چرا این اهمیت دارد:</strong> وقتی یه مارکتر از <code>/probe-discovery</code> استفاده می‌کند، در واقع دانش ماژول Probe — شامل Customer Discovery، Behavioral Triggers، و Value Proposition Design — را به صورت structured اجرا می‌کند. Agent یادگیری را به اجرا تبدیل می‌کند.
+    <div class="key-note">
+      <strong>پروتکل حل تعارض:</strong> اگر دو اسکیل خروجی متعارض تولید کردند —
+      تعارض نام‌برده می‌شود ← هر دو گزینه با trade-off ارائه می‌شوند ← توصیه صریح ← تصمیم نهایی با مدیر.
     </div>
+  </div>
+</section>
 
-    <div class="two-col mt-32">
-      <div>
-        <div style="font-size:0.8em;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">نکته درباره Predict</div>
-        <div class="callout" style="font-size:0.83em;">
-          ماژول Predict در برنامه درسی — که شامل Machine Learning، Predictive Analytics، و Generative AI است — به عنوان یک اسکیل مستقل در agent وجود ندارد. این یک انتخاب آگاهانه است: AI یک <em>lens</em> است که همه اسکیل‌ها از آن استفاده می‌کنند — از تحلیل رقبا در <code>/competitive-intel</code> گرفته تا پیش‌بینی Churn در <code>/retention-audit</code>.
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.8em;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">نکته درباره People</div>
-        <div class="callout" style="font-size:0.83em;">
-          ماژول People — که شامل Team Structure، Ad Agencies، و ارتباط با تیم‌های Product/Tech است — در agent از طریق دو مسیر پوشش داده می‌شود: اسکیل‌های اشتراکی با PM و Designer برای همکاری cross-functional، و Collaboration Map که نقاط تماس دقیق را مشخص می‌کند.
-        </div>
-      </div>
-    </div>
+<!-- ========== ACT V ========== -->
+<div class="act-marker">
+  <div class="container">
+    <div class="act-num">Act V</div>
+    <div class="act-title">بستر بزرگ‌تر — تیم و دانش</div>
+    <div class="act-sub">Foundation & Integration</div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ SUMMARY ══ -->
-<div class="section section-alt">
+<!-- ========== CROSS FUNCTIONAL ========== -->
+<section>
   <div class="container">
-    <span class="sec-label">Summary</span>
-    <h2 class="sec-title">آنچه این سیستم تحویل می‌دهد</h2>
+    <div class="eyebrow">Cross-Functional · Product Integration</div>
+    <h2 class="section-title">نقاط تماس با <em>تیم پروداکت</em></h2>
+    <p class="section-intro">
+      مارکتینگ و پروداکت در ۶ نقطه همپوشانی عملیاتی دارند. اسکیل‌های اشتراکی خروجی یکسان با فرمت یکسان می‌دهند —
+      زبان مشترک، ابزار مشترک، هماهنگی بدون اصطکاک.
+    </p>
 
-    <div class="two-col">
-      <div>
-        <div class="std-row"><div class="std-num">🔍</div><div><div class="std-title">کشف تا استراتژی</div><div class="std-desc">probe-discovery → competitive-intel → brand-positioning → strategy-one-page</div></div></div>
-        <div class="std-row"><div class="std-num">💰</div><div><div class="std-title">اقتصاد مارکتینگ</div><div class="std-desc">pricing-strategy + data-pinpoint — هر تصمیم با CAC، LTV و ROI مستند</div></div></div>
-        <div class="std-row"><div class="std-num">🚀</div><div><div class="std-title">کمپین‌های دقیق</div><div class="std-desc">acquisition-pull + landing-architect — بریف آماده تحویل به آژانس</div></div></div>
+    <div class="xfunc">
+      <div class="xfunc-col marketing">
+        <h4>مارکتینگ</h4>
+        <ul>
+          <li>کشف Pain مشتری <code>/probe-discovery</code></li>
+          <li>GTM Plan <code>/strategy-one-page</code></li>
+          <li>مدل قیمت <code>/pricing-strategy</code></li>
+          <li>کمپین جذب <code>/acquisition-pull</code></li>
+          <li>Attribution <code>/data-pinpoint</code></li>
+          <li>حافظه <code>/decision-logger</code></li>
+        </ul>
       </div>
-      <div>
-        <div class="std-row"><div class="std-num">🧠</div><div><div class="std-title">حافظه سازمانی</div><div class="std-desc">decision-logger در انتهای هر chain — هیچ تصمیمی گم نمی‌شود</div></div></div>
-        <div class="std-row"><div class="std-num">🤝</div><div><div class="std-title">همراستایی با پروداکت</div><div class="std-desc">۶ اسکیل اشتراکی — هیچ وعده‌ای خارج از Roadmap</div></div></div>
-        <div class="std-row"><div class="std-num">⚡</div><div><div class="std-title">Human-in-the-Loop</div><div class="std-desc">هر خروجی استراتژیک Sign-off Required دارد</div></div></div>
+
+      <div class="xfunc-bridge">
+        <div class="bridge-item">Pain → Feature</div>
+        <div class="bridge-arrow">↔</div>
+        <div class="bridge-item">GTM ↔ Roadmap</div>
+        <div class="bridge-arrow">↔</div>
+        <div class="bridge-item">Wireframe</div>
+        <div class="bridge-arrow">↔</div>
+        <div class="bridge-item">Launch Sync</div>
+      </div>
+
+      <div class="xfunc-col product">
+        <h4>پروداکت</h4>
+        <ul>
+          <li>تعریف DOD <code>/problem-framing</code></li>
+          <li>مشخصات فیچر <code>/feature-spec</code></li>
+          <li>وابستگی‌ها <code>/feature-dependency</code></li>
+          <li>وایرفریم <code>/wireframe-generator</code></li>
+          <li>تحلیل انتشار <code>/release-impact</code></li>
+          <li>حافظه <code>/decision-logger</code></li>
+        </ul>
       </div>
     </div>
+
+    <div class="shared-skills">
+      <h4>۶ اسکیل اشتراکی — خروجی یکسان برای هر سه نقش</h4>
+      <div class="shared-grid">
+        <div class="shared-chip"><code>/prompt-optimizer</code><span>بریف آژانس و ارتباطات فنی</span></div>
+        <div class="shared-chip"><code>/presentation-style</code><span>HTML slide deck</span></div>
+        <div class="shared-chip"><code>/wireframe-generator</code><span>وایرفریم لندینگ</span></div>
+        <div class="shared-chip"><code>/task-writer</code><span>تسک Linear</span></div>
+        <div class="shared-chip"><code>/meeting-support</code><span>آجندا جلسات</span></div>
+        <div class="shared-chip"><code>/design-system-check</code><span>کامپوننت‌های موجود</span></div>
+      </div>
+    </div>
+
+    <div class="rule-banner">
+      <strong>⚠️ قانون هماهنگی (حل مشکل ۳):</strong> هیچ وعده مارکتینگ نباید فراتر از Roadmap مصوب باشد.
+      قبل از نهایی‌سازی هر GTM Plan، هماهنگی با PM الزامی است. این قانون در Policy لایه خودکار بررسی می‌شود.
+    </div>
+  </div>
+</section>
+
+<!-- ========== 11P FRAMEWORK ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Theoretical Foundation</div>
+    <h2 class="section-title">ریشه‌های علمی — <em>فریم‌ورک ۱۱P</em></h2>
+    <p class="section-intro">
+      ساختار اسکیل‌های این agent تصادفی نیست. هر اسکیل مستقیماً از یک ماژول فریم‌ورک مدیریت مارکتینگ مشتق شده —
+      agent در واقع <em>لایه اجرایی دانش مارکتینگ</em> است، نه یک ابزار prompt.
+    </p>
+
+    <div class="p11-intro">
+      <strong>چرا این اهمیت دارد:</strong> وقتی یک مارکتر از <code>/probe-discovery</code> استفاده می‌کند،
+      در واقع دانش ماژول Probe — شامل Customer Discovery، Behavioral Triggers، و Value Proposition Design — را
+      به صورت structured اجرا می‌کند. Agent یادگیری را به اجرا تبدیل می‌کند.
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ماژول دانش (۱۱P)</th>
+          <th>حوزه</th>
+          <th>اسکیل agent</th>
+          <th>یادداشت</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Principles</strong></td><td>زبان و منطق</td><td><code>/marketing-logic</code></td><td>قطب‌نمای علمی</td></tr>
+        <tr><td><strong>Probe</strong></td><td>کشف بازار</td><td><code>/probe-discovery</code> · <code>/competitive-intel</code></td><td>BANT · Value Prop</td></tr>
+        <tr><td><strong>Plan</strong></td><td>استراتژی</td><td><code>/strategy-one-page</code> · <code>/pricing-strategy</code></td><td>OKR · GTM · Budget</td></tr>
+        <tr><td><strong>Pull</strong></td><td>جذب و فعال‌سازی</td><td><code>/acquisition-pull</code> · <code>/landing-architect</code></td><td>Channel · CRO · Creative</td></tr>
+        <tr><td><strong>Preserve</strong></td><td>ماندگاری</td><td><code>/retention-audit</code></td><td>Cohort · Reactivation</td></tr>
+        <tr><td><strong>Propel</strong></td><td>موتور رشد</td><td><code>/growth-engine</code> · <code>/organic-growth</code></td><td>Loops · AB Test</td></tr>
+        <tr><td><strong>Position</strong></td><td>برند</td><td><code>/brand-positioning</code> · <code>/crisis-management</code></td><td>7 Powers · Narrative</td></tr>
+        <tr><td><strong>Platform</strong></td><td>MarTech</td><td><code>/martech-platform</code></td><td>CRM · Automation</td></tr>
+        <tr><td><strong>Predict</strong></td><td>AI</td><td>توزیع‌شده در همه</td><td>AI یک lens است، نه اسکیل جدا</td></tr>
+        <tr><td><strong>Pinpoint</strong></td><td>داده</td><td><code>/data-pinpoint</code></td><td>Attribution · BI</td></tr>
+        <tr><td><strong>People</strong></td><td>سازمان</td><td>اسکیل‌های اشتراکی</td><td>Cross-functional با PM/Designer</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ========== SUMMARY ========== -->
+<section>
+  <div class="container">
+    <div class="eyebrow">Summary</div>
+    <h2 class="section-title">آنچه این سیستم تحویل می‌دهد</h2>
+    <p class="section-intro">
+      چهار مشکلی که در ابتدا گفتیم، هر کدام راه‌حل مشخصی دارند.
+      شش بخش زیر ستون‌های اصلی تحویل این سیستم هستند.
+    </p>
 
     <div class="summary-grid">
-      <div class="summary-card"><div class="num">15</div><div class="lbl">اسکیل مارکتینگ</div></div>
-      <div class="summary-card"><div class="num">6</div><div class="lbl">اسکیل اشتراکی</div></div>
-      <div class="summary-card"><div class="num">4</div><div class="lbl">Chain Command</div></div>
-      <div class="summary-card"><div class="num">21</div><div class="lbl">تعداد کل دستور</div></div>
+      <div class="summary-item">
+        <div class="summary-icon">🔍</div>
+        <h4>کشف تا استراتژی</h4>
+        <p>probe-discovery → competitive-intel → brand-positioning → strategy-one-page</p>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">💰</div>
+        <h4>اقتصاد مارکتینگ</h4>
+        <p>pricing-strategy + data-pinpoint — هر تصمیم با CAC، LTV و ROI مستند. <strong>حل مشکل ۲.</strong></p>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🚀</div>
+        <h4>کمپین‌های دقیق</h4>
+        <p>acquisition-pull + landing-architect — بریف آماده تحویل به آژانس.</p>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🧠</div>
+        <h4>حافظه سازمانی</h4>
+        <p>decision-logger در انتهای هر chain. <strong>حل مشکل ۱ — هیچ تصمیمی گم نمی‌شود.</strong></p>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">🤝</div>
+        <h4>همراستایی با پروداکت</h4>
+        <p>۶ اسکیل اشتراکی. <strong>حل مشکل ۳ — هیچ وعده‌ای خارج از Roadmap.</strong></p>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon">📋</div>
+        <h4>موتور مصاحبه</h4>
+        <p>Pre-Context + ۱۲ بخش P-framework = ۲۲ سوال. یک‌بار اجرا، همیشه لود. <strong>حل مشکل ۴ — هیچ session از صفر شروع نمی‌شود.</strong></p>
+      </div>
+    </div>
+
+    <div class="final-stats">
+      <div class="final-stat">
+        <div class="final-stat-num">15</div>
+        <div class="final-stat-label">اسکیل اختصاصی</div>
+      </div>
+      <div class="final-stat">
+        <div class="final-stat-num">6</div>
+        <div class="final-stat-label">اسکیل اشتراکی</div>
+      </div>
+      <div class="final-stat">
+        <div class="final-stat-num">4</div>
+        <div class="final-stat-label">Chain Command</div>
+      </div>
+      <div class="final-stat">
+        <div class="final-stat-num">25</div>
+        <div class="final-stat-label">تعداد کل دستور</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════ FOOTER ══ -->
+<!-- ========== FOOTER ========== -->
 <footer>
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand">Product Team · Claude Skills · Marketing Agent</div>
-      <div class="footer-sub">v3.0 · CMO Reviewed · 2026</div>
-    </div>
-    <div class="footer-links">
-      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/">Product Team Home</a>
-      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/product-manager-presentation.html">PM Guide</a>
-      <a href="https://imamirezaei.github.io/Product-Team-Claude-Skills/product-designer-presentation.html">Designer Guide</a>
-    </div>
+  <div class="container footer-row">
+    <span>Product Team · Claude Skills · Marketing Agent</span>
+    <span>v4.1 · Interview Detail · CMO Reviewed · 2026</span>
   </div>
 </footer>
 
